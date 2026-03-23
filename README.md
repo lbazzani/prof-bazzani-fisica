@@ -30,19 +30,13 @@ Dizionario interattivo con oltre 30 termini di fisica, cercabile e integrato nel
 
 HTML, CSS e JavaScript vanilla — nessun framework, nessun build step. Le formule sono renderizzate con [KaTeX](https://katex.org/), le animazioni disegnate su canvas.
 
-## Deploy
-
-Il sito è servito da nginx su un server Ubuntu. Per pubblicare una nuova versione:
-
-```bash
-./deploy.sh
-```
-
-Lo script usa `rsync` per copiare la cartella `app/` sul server via SSH.
-
 ## Target
 
 Studenti di **prima superiore** (14 anni). Le spiegazioni privilegiano l'intuizione fisica e le analogie con la vita quotidiana, evitando formalismi eccessivi.
+
+## Contribuire
+
+Hai trovato un errore? Vuoi aggiungere un argomento o migliorare una spiegazione? Apri una [issue](https://github.com/lbazzani/prof-bazzani-fisica/issues) o una pull request — ogni contributo è benvenuto!
 
 ## Licenza
 
