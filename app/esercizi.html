@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Il Prof Bazzani - Esercizi di fisica</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤓</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <link rel="stylesheet" href="style.css" id="app-css">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-inner">
+            <a href="index.html" class="btn-home" aria-label="Torna alla home">
+                <span class="btn-home-arrow">&larr;</span>
+                <span class="btn-home-label">Home</span>
+            </a>
+            <div class="logo">
+                <span class="logo-icon">🤓</span>
+                <h1>Il Prof Bazzani</h1>
+                <span class="logo-subtitle">Esercizi</span>
+            </div>
+            <button class="btn-glossario" id="btn-glossario" aria-label="Apri glossario">
+                <span class="btn-glossario-icon">📖</span>
+                <span class="btn-glossario-label">Glossario</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Modale Glossario -->
+    <div class="glossario-modal" id="glossario-modal">
+        <div class="glossario-panel">
+            <div class="glossario-header">
+                <h2>📖 Glossario</h2>
+                <button class="glossario-close" id="glossario-close" aria-label="Chiudi">&times;</button>
+            </div>
+            <div class="glossario-search-box">
+                <input type="text" id="glossario-search" placeholder="Cerca un termine..." autocomplete="off">
+            </div>
+            <div class="glossario-body" id="glossario-body"></div>
+        </div>
+    </div>
+
+    <!-- Tab di navigazione problemi -->
+    <nav class="problem-tabs">
+        <button class="tab active" data-problem="0">
+            <span class="tab-icon">🚗</span>
+            <span class="tab-label">Piano inclinato</span>
+        </button>
+        <button class="tab" data-problem="1">
+            <span class="tab-icon">🪜</span>
+            <span class="tab-label">Scala a pioli</span>
+        </button>
+        <button class="tab" data-problem="2">
+            <span class="tab-icon">🎱</span>
+            <span class="tab-label">Biliardo</span>
+        </button>
+    </nav>
+
+    <!-- Dropdown mobile -->
+    <div class="tab-dropdown">
+        <select id="tab-select">
+            <option value="0">🚗  Piano inclinato</option>
+            <option value="1">🪜  Scala a pioli</option>
+            <option value="2">🎱  Biliardo</option>
+        </select>
+    </div>
+
+    <!-- Contenuto principale -->
+    <main class="main-content">
+        <!-- Box enunciato del problema (collassabile) -->
+        <div class="problem-statement" id="problem-statement">
+            <button class="problem-statement-toggle" id="toggle-statement">
+                <span class="toggle-icon" id="toggle-icon">&#9660;</span>
+                <span class="toggle-label">Testo del problema</span>
+            </button>
+            <div class="problem-statement-body" id="statement-body">
+                <p id="statement-text"></p>
+            </div>
+        </div>
+
+        <div class="content-grid">
+            <!-- Area animazione -->
+            <div class="canvas-container">
+                <canvas id="animation-canvas" width="600" height="400"></canvas>
+            </div>
+
+            <!-- Area spiegazione -->
+            <div class="explanation-container">
+                <div class="step-badge">
+                    <span id="step-number">1</span> / <span id="step-total">8</span>
+                </div>
+                <h2 id="step-title" class="step-title">Caricamento...</h2>
+                <div id="step-text" class="step-text"></div>
+                <div id="step-formula" class="step-formula"></div>
+            </div>
+        </div>
+
+        <!-- Navigazione passaggi -->
+        <div class="step-navigation">
+            <button id="btn-prev" class="nav-btn" disabled>
+                <span class="nav-arrow">←</span> Indietro
+            </button>
+
+            <div id="step-dots" class="step-dots"></div>
+
+            <button id="btn-next" class="nav-btn nav-btn-primary">
+                Avanti <span class="nav-arrow">→</span>
+            </button>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Dedicato alla mitica 1G del Convitto</p>
+    </footer>
+
+    <!-- Scripts — cache busting via version.js -->
+    <script>
+    // Cache busting: aggiunge ?v=timestamp a tutti i file locali
+    const APP_VERSION = Date.now();
+    function loadScript(src) {
+        const s = document.createElement('script');
+        s.src = src + '?v=' + APP_VERSION;
+        document.body.appendChild(s);
+        return new Promise(r => s.onload = r);
+    }
+    // Bust cache del CSS
+    document.getElementById('app-css').href = 'style.css?v=' + APP_VERSION;
+    // Carica gli script in ordine
+    loadScript('draw.js')
+        .then(() => loadScript('glossario.js'))
+        .then(() => loadScript('problemi/problema1.js'))
+        .then(() => loadScript('problemi/problema2.js'))
+        .then(() => loadScript('problemi/problema3.js'))
+        .then(() => loadScript('app.js'));
+    </script>
+</body>
+</html>

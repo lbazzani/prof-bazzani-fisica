@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Il Prof Bazzani - Teoria di fisica</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤓</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <link rel="stylesheet" href="style.css" id="app-css">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="index.html" class="btn-home" aria-label="Torna alla home">
+                <span class="btn-home-arrow">&larr;</span>
+                <span class="btn-home-label">Home</span>
+            </a>
+            <div class="logo">
+                <span class="logo-icon">🤓</span>
+                <h1>Il Prof Bazzani</h1>
+                <span class="logo-subtitle">Teoria</span>
+            </div>
+            <button class="btn-glossario" id="btn-glossario" aria-label="Apri glossario">
+                <span class="btn-glossario-icon">📖</span>
+                <span class="btn-glossario-label">Glossario</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Modale Glossario -->
+    <div class="glossario-modal" id="glossario-modal">
+        <div class="glossario-panel">
+            <div class="glossario-header">
+                <h2>📖 Glossario</h2>
+                <button class="glossario-close" id="glossario-close" aria-label="Chiudi">&times;</button>
+            </div>
+            <div class="glossario-search-box">
+                <input type="text" id="glossario-search" placeholder="Cerca un termine..." autocomplete="off">
+            </div>
+            <div class="glossario-body" id="glossario-body"></div>
+        </div>
+    </div>
+
+    <!-- Tab temi -->
+    <nav class="problem-tabs">
+        <button class="tab active" data-problem="0">
+            <span class="tab-icon">🔬</span>
+            <span class="tab-label">Notazione sci.</span>
+        </button>
+        <button class="tab" data-problem="1">
+            <span class="tab-icon">➡️</span>
+            <span class="tab-label">Vettori</span>
+        </button>
+        <button class="tab" data-problem="2">
+            <span class="tab-icon">🍎</span>
+            <span class="tab-label">Newton</span>
+        </button>
+        <button class="tab" data-problem="3">
+            <span class="tab-icon">💪</span>
+            <span class="tab-label">Forze</span>
+        </button>
+        <button class="tab" data-problem="4">
+            <span class="tab-icon">📋</span>
+            <span class="tab-label">DCL</span>
+        </button>
+        <button class="tab" data-problem="5">
+            <span class="tab-icon">📐</span>
+            <span class="tab-label">Piano inclinato</span>
+        </button>
+        <button class="tab" data-problem="6">
+            <span class="tab-icon">🔧</span>
+            <span class="tab-label">Momenti</span>
+        </button>
+        <button class="tab" data-problem="7">
+            <span class="tab-icon">💥</span>
+            <span class="tab-label">Impulso</span>
+        </button>
+    </nav>
+
+    <!-- Dropdown mobile -->
+    <div class="tab-dropdown">
+        <select id="tab-select">
+            <option value="0">🔬  Notazione scientifica</option>
+            <option value="1">➡️  I vettori</option>
+            <option value="2">🍎  Leggi di Newton</option>
+            <option value="3">💪  Forze ed equilibrio</option>
+            <option value="4">📋  Diagramma corpo libero</option>
+            <option value="5">📐  Piano inclinato</option>
+            <option value="6">🔧  Momenti delle forze</option>
+            <option value="7">💥  Impulso e quantità di moto</option>
+        </select>
+    </div>
+
+    <main class="main-content">
+        <div class="content-grid">
+            <div class="canvas-container">
+                <canvas id="animation-canvas" width="600" height="400"></canvas>
+            </div>
+            <div class="explanation-container">
+                <div class="step-badge">
+                    <span id="step-number">1</span> / <span id="step-total">6</span>
+                </div>
+                <h2 id="step-title" class="step-title">Caricamento...</h2>
+                <div id="step-text" class="step-text"></div>
+                <div id="step-formula" class="step-formula"></div>
+            </div>
+        </div>
+
+        <div class="step-navigation">
+            <button id="btn-prev" class="nav-btn" disabled>
+                <span class="nav-arrow">←</span> Indietro
+            </button>
+            <div id="step-dots" class="step-dots"></div>
+            <button id="btn-next" class="nav-btn nav-btn-primary">
+                Avanti <span class="nav-arrow">→</span>
+            </button>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>Dedicato alla mitica 1G del Convitto</p>
+    </footer>
+
+    <script>
+    const APP_VERSION = Date.now();
+    function loadScript(src) {
+        const s = document.createElement('script');
+        s.src = src + '?v=' + APP_VERSION;
+        document.body.appendChild(s);
+        return new Promise(r => s.onload = r);
+    }
+    document.getElementById('app-css').href = 'style.css?v=' + APP_VERSION;
+    loadScript('draw.js')
+        .then(() => loadScript('glossario.js'))
+        .then(() => loadScript('teoria/tema1.js'))
+        .then(() => loadScript('teoria/tema2.js'))
+        .then(() => loadScript('teoria/tema3.js'))
+        .then(() => loadScript('teoria/tema4.js'))
+        .then(() => loadScript('teoria/tema5.js'))
+        .then(() => loadScript('teoria/tema6.js'))
+        .then(() => loadScript('teoria/tema7.js'))
+        .then(() => loadScript('teoria/tema8.js'))
+        .then(() => loadScript('teoria/teoria-app.js'));
+    </script>
+</body>
+</html>
