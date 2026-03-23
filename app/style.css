@@ -869,6 +869,21 @@ body {
     font-size: 0.8rem;
 }
 
+.footer-github {
+    margin-top: 4px;
+    font-size: 0.75rem;
+}
+
+.footer-github a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.footer-github a:hover {
+    text-decoration: underline;
+}
+
 /* ===== Animations ===== */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(6px); }
