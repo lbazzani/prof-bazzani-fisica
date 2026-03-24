@@ -3,7 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Il Prof Bazzani - Fisica facile</title>
+    <title>Il Prof Bazzani - Fisica facile per la scuola superiore</title>
+    <meta name="description" content="Fisica spiegata facile con animazioni interattive: forze, equilibrio, piano inclinato, momenti, impulso e quantità di moto. Lezioni e esercizi svolti passo passo per la scuola superiore.">
+    <meta name="keywords" content="fisica, scuola superiore, esercizi fisica, piano inclinato, forze, equilibrio, momenti, impulso, quantità di moto, Newton, lezioni fisica, animazioni fisica">
+    <meta name="author" content="Prof. Lorenzo Bazzani">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://prof.bazzani.info/">
+
+    <!-- Open Graph / Social -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://prof.bazzani.info/">
+    <meta property="og:title" content="Il Prof Bazzani - Fisica facile per la scuola superiore">
+    <meta property="og:description" content="Teoria ed esercizi di fisica spiegati passo per passo con animazioni interattive. Forze, equilibrio, piano inclinato, momenti, impulso e quantità di moto.">
+    <meta property="og:site_name" content="Il Prof Bazzani">
+    <meta property="og:locale" content="it_IT">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Il Prof Bazzani - Fisica facile">
+    <meta name="twitter:description" content="Fisica spiegata facile con animazioni interattive per la scuola superiore.">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "EducationalOrganization",
+        "name": "Il Prof Bazzani",
+        "url": "https://prof.bazzani.info",
+        "description": "App web interattiva per imparare la fisica con animazioni, esercizi svolti e glossario scientifico",
+        "sameAs": ["https://github.com/lbazzani/prof-bazzani-fisica"],
+        "teaches": {
+            "@type": "Course",
+            "name": "Fisica per la scuola superiore",
+            "description": "Lezioni animate e esercizi svolti passo passo: forze, equilibrio, piano inclinato, momenti, impulso e quantità di moto",
+            "provider": { "@type": "Person", "name": "Lorenzo Bazzani" },
+            "educationalLevel": "Scuola superiore",
+            "inLanguage": "it",
+            "isAccessibleForFree": true,
+            "hasCourseInstance": [
+                { "@type": "CourseInstance", "name": "Le forze e l'equilibrio", "courseMode": "online" },
+                { "@type": "CourseInstance", "name": "Il piano inclinato", "courseMode": "online" },
+                { "@type": "CourseInstance", "name": "I momenti delle forze", "courseMode": "online" },
+                { "@type": "CourseInstance", "name": "Le tre leggi di Newton", "courseMode": "online" },
+                { "@type": "CourseInstance", "name": "Impulso e quantità di moto", "courseMode": "online" }
+            ]
+        }
+    }
+    </script>
+
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤓</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -11,6 +58,15 @@
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
     <link rel="stylesheet" href="style.css" id="app-css">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-QH76MY76LK"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-QH76MY76LK');
+    </script>
 </head>
 <body>
     <header class="header">
@@ -27,19 +83,6 @@
         </div>
     </header>
 
-    <!-- Modale Glossario -->
-    <div class="glossario-modal" id="glossario-modal">
-        <div class="glossario-panel">
-            <div class="glossario-header">
-                <h2>📖 Glossario</h2>
-                <button class="glossario-close" id="glossario-close" aria-label="Chiudi">&times;</button>
-            </div>
-            <div class="glossario-search-box">
-                <input type="text" id="glossario-search" placeholder="Cerca un termine..." autocomplete="off">
-            </div>
-            <div class="glossario-body" id="glossario-body"></div>
-        </div>
-    </div>
 
     <main class="home-main">
         <!-- Hero -->
@@ -48,31 +91,51 @@
             <p class="home-hero-sub">Teoria ed esercizi di fisica spiegati passo per passo con animazioni, per capire davvero senza impararli a memoria.</p>
         </div>
 
+        <!-- Metodo di risoluzione — banner compatto -->
+        <section class="home-metodo-banner">
+            <div class="home-metodo-intro">
+                <span class="home-metodo-icon">🧠</span>
+                <p>Ogni problema si risolve in <b>4 passi</b>:</p>
+            </div>
+            <div class="home-metodo-row">
+                <span class="home-metodo-pill"><b>1.</b> Concetto chiave</span>
+                <span class="home-metodo-arrow">→</span>
+                <span class="home-metodo-pill"><b>2.</b> Dati</span>
+                <span class="home-metodo-arrow">→</span>
+                <span class="home-metodo-pill"><b>3.</b> Ragionamento</span>
+                <span class="home-metodo-arrow">→</span>
+                <span class="home-metodo-pill"><b>4.</b> Calcoli</span>
+            </div>
+        </section>
+
         <!-- Sezione Esercizi -->
         <section class="home-section">
             <h3 class="home-section-title">✏️ Esercizi svolti</h3>
             <p class="home-section-desc">I tre problemi della verifica, spiegati passo per passo</p>
             <div class="home-cards">
-                <a href="esercizi.html?p=0" class="home-card home-card-esercizio">
+                <a href="esercizi.html?p=0" class="home-card home-card-esercizio" data-exercise="0">
                     <span class="home-card-icon">🚗</span>
                     <div class="home-card-body">
                         <h4>Il carro attrezzi</h4>
                         <p>Piano inclinato a 30°, forza peso, tensione e reazione normale</p>
                     </div>
+                    <div class="home-card-progress"><div class="home-card-progress-fill"></div></div>
                 </a>
-                <a href="esercizi.html?p=1" class="home-card home-card-esercizio">
+                <a href="esercizi.html?p=1" class="home-card home-card-esercizio" data-exercise="1">
                     <span class="home-card-icon">🪜</span>
                     <div class="home-card-body">
                         <h4>La scala a pioli</h4>
                         <p>Equilibrio con il muro, momenti delle forze e il trucco del perno</p>
                     </div>
+                    <div class="home-card-progress"><div class="home-card-progress-fill"></div></div>
                 </a>
-                <a href="esercizi.html?p=2" class="home-card home-card-esercizio">
+                <a href="esercizi.html?p=2" class="home-card home-card-esercizio" data-exercise="2">
                     <span class="home-card-icon">🎱</span>
                     <div class="home-card-body">
                         <h4>Il biliardo</h4>
                         <p>Impulso, conservazione della quantità di moto e urto tra palle</p>
                     </div>
+                    <div class="home-card-progress"><div class="home-card-progress-fill"></div></div>
                 </a>
             </div>
         </section>
@@ -82,61 +145,69 @@
             <h3 class="home-section-title">📚 Teoria</h3>
             <p class="home-section-desc">Vuoi approfondire? Lezioni animate per capire i concetti fondamentali</p>
             <div class="home-cards">
-                <a href="teoria.html?t=0" class="home-card home-card-teoria">
+                <a href="teoria.html?t=0" class="home-card home-card-teoria" data-topic="notazione-scientifica">
                     <span class="home-card-icon">🔬</span>
                     <div class="home-card-body">
                         <h4>La notazione scientifica</h4>
                         <p>Come scrivere numeri enormi e minuscoli in modo compatto e preciso</p>
                     </div>
+                    <div class="home-card-progress"><div class="home-card-progress-fill"></div></div>
                 </a>
-                <a href="teoria.html?t=1" class="home-card home-card-teoria">
+                <a href="teoria.html?t=1" class="home-card home-card-teoria" data-topic="vettori">
                     <span class="home-card-icon">➡️</span>
                     <div class="home-card-body">
                         <h4>I vettori: le basi</h4>
                         <p>Scalari e vettori, componenti, somma vettoriale e perché servono</p>
                     </div>
+                    <div class="home-card-progress"><div class="home-card-progress-fill"></div></div>
                 </a>
-                <a href="teoria.html?t=2" class="home-card home-card-teoria">
+                <a href="teoria.html?t=2" class="home-card home-card-teoria" data-topic="newton">
                     <span class="home-card-icon">🍎</span>
                     <div class="home-card-body">
                         <h4>Le tre leggi di Newton</h4>
                         <p>Inerzia, F=ma e azione-reazione: le fondamenta della meccanica</p>
                     </div>
+                    <div class="home-card-progress"><div class="home-card-progress-fill"></div></div>
                 </a>
-                <a href="teoria.html?t=3" class="home-card home-card-teoria">
+                <a href="teoria.html?t=3" class="home-card home-card-teoria" data-topic="forze-equilibrio">
                     <span class="home-card-icon">💪</span>
                     <div class="home-card-body">
                         <h4>Le forze e l'equilibrio</h4>
                         <p>Cos'è una forza, come si sommano, il peso, la reazione normale, l'attrito e l'equilibrio</p>
                     </div>
+                    <div class="home-card-progress"><div class="home-card-progress-fill"></div></div>
                 </a>
-                <a href="teoria.html?t=4" class="home-card home-card-teoria">
+                <a href="teoria.html?t=4" class="home-card home-card-teoria" data-topic="dcl">
                     <span class="home-card-icon">📋</span>
                     <div class="home-card-body">
                         <h4>Il diagramma di corpo libero</h4>
                         <p>Come isolare un oggetto e disegnare tutte le forze passo per passo</p>
                     </div>
+                    <div class="home-card-progress"><div class="home-card-progress-fill"></div></div>
                 </a>
-                <a href="teoria.html?t=5" class="home-card home-card-teoria">
+                <a href="teoria.html?t=5" class="home-card home-card-teoria" data-topic="piano-inclinato">
                     <span class="home-card-icon">📐</span>
                     <div class="home-card-body">
                         <h4>Il piano inclinato</h4>
                         <p>Seno e coseno, come scomporre le forze e perché l'angolo cambia tutto</p>
                     </div>
+                    <div class="home-card-progress"><div class="home-card-progress-fill"></div></div>
                 </a>
-                <a href="teoria.html?t=6" class="home-card home-card-teoria">
+                <a href="teoria.html?t=6" class="home-card home-card-teoria" data-topic="momenti">
                     <span class="home-card-icon">🔧</span>
                     <div class="home-card-body">
                         <h4>I momenti delle forze</h4>
                         <p>Come una forza fa ruotare le cose: momento, braccio e il trucco del perno</p>
                     </div>
+                    <div class="home-card-progress"><div class="home-card-progress-fill"></div></div>
                 </a>
-                <a href="teoria.html?t=7" class="home-card home-card-teoria">
+                <a href="teoria.html?t=7" class="home-card home-card-teoria" data-topic="impulso-qdm">
                     <span class="home-card-icon">💥</span>
                     <div class="home-card-body">
                         <h4>Impulso e quantità di moto</h4>
                         <p>Come si trasferisce il movimento: impulso, conservazione e urti</p>
                     </div>
+                    <div class="home-card-progress"><div class="home-card-progress-fill"></div></div>
                 </a>
             </div>
         </section>
@@ -161,7 +232,26 @@
         return new Promise(r => s.onload = r);
     }
     document.getElementById('app-css').href = 'style.css?v=' + APP_VERSION;
-    loadScript('glossario.js');
+    loadScript('progress.js').then(() => {
+        loadScript('glossario.js');
+        // Update progress indicators on home cards
+        document.querySelectorAll('[data-topic]').forEach(card => {
+            const pct = Progress.getTheoryProgress(card.dataset.topic);
+            const fill = card.querySelector('.home-card-progress-fill');
+            if (fill) {
+                fill.style.width = pct + '%';
+                if (pct >= 100) card.classList.add('home-card-done');
+            }
+        });
+        document.querySelectorAll('[data-exercise]').forEach(card => {
+            const pct = Progress.getExerciseProgress(parseInt(card.dataset.exercise));
+            const fill = card.querySelector('.home-card-progress-fill');
+            if (fill) {
+                fill.style.width = pct + '%';
+                if (pct >= 100) card.classList.add('home-card-done');
+            }
+        });
+    });
     </script>
 </body>
 </html>

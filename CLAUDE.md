@@ -83,6 +83,20 @@ I file risiedono sul server in `/home/lorenzo/projects/prof.bazzani.info/`.
 
 ~30 voci scientifiche + unità di misura con tabelle di conversione. I termini nel testo sono wrappati con `<span class="term" data-term="KEY">parola</span>` e al click mostrano un callout con definizione, formula e "vedi anche". Accessibile anche dal bottone 📖 nell'header (modale con ricerca e accordion).
 
+## Struttura pedagogica degli esercizi
+
+Ogni esercizio deve seguire questa struttura a 4 fasi:
+
+1. **Concetto chiave** — Primo step. Spiega quale idea teorica serve per risolvere il problema (es. scomposizione del peso sul piano inclinato, momenti delle forze, impulso e conservazione della qdm). Lo studente deve capire COSA serve prima di iniziare a calcolare. Include un'animazione Canvas che illustra il concetto in modo semplice e una formula riassuntiva.
+
+2. **Dati e schema** — Scrivere sempre i dati del problema e disegnare la situazione. "Regola d'oro: scrivi i dati prima di calcolare." Identificare cosa ci viene chiesto.
+
+3. **Ragionamento** — Guidare lo studente passo-passo nel ragionamento fisico: quali forze agiscono, come si scompongono, quale principio applicare. Ogni passaggio logico è uno step separato con animazione.
+
+4. **Calcoli e verifica** — Eseguire i calcoli numerici, esprimere in notazione scientifica quando richiesto, e verificare che il risultato abbia senso fisico (es. equilibrio verificato).
+
+Questa impostazione vale per TUTTI gli esercizi, presenti e futuri: concetto chiave → dati → ragionamento → calcoli.
+
 ## Struttura di uno step
 
 ```js

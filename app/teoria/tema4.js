@@ -1,13 +1,13 @@
-// ===== Tema 4: Impulso e quantita di moto =====
+// ===== Tema 4: Impulso e quantità di moto =====
 
 const Tema4 = (() => {
     const steps = [
-        // ---- Step 1: La quantita di moto ----
+        // ---- Step 1: La quantità di moto ----
         {
-            title: 'La quantita di moto',
-            text: 'Un camion che viaggia piano e un proiettile velocissimo possono avere lo stesso effetto in un urto. Come e possibile?<br><br>' +
-                'La risposta e la <span class="term" data-term="quantita-di-moto">quantita di moto</span>: una grandezza che combina <span class="term" data-term="massa">massa</span> e <span class="term" data-term="velocita">velocita</span>. Un oggetto molto pesante ma lento puo avere la stessa quantita di moto di uno leggero ma velocissimo.<br><br>' +
-                'La formula e: <span class="highlight">p = m &times; v</span>. Si misura in <b>kg&middot;m/s</b>. E un <b>vettore</b>: ha direzione e verso!',
+            title: 'La quantità di moto',
+            text: 'Un camion che viaggia piano e una moto veloce possono avere lo stesso effetto in un urto. Come è possibile?<br><br>' +
+                'La risposta è la <span class="term" data-term="quantita-di-moto">quantità di moto</span>: una grandezza che combina <span class="term" data-term="massa">massa</span> e <span class="term" data-term="velocita">velocità</span>. Un oggetto molto pesante ma lento può avere la stessa quantità di moto di uno leggero ma veloce.<br><br>' +
+                'La formula è: <span class="highlight">p = m &times; v</span>. Si misura in <b>kg&middot;m/s</b>. È un <b>vettore</b>: ha direzione e verso!',
             formula: '\\vec{p} = m \\cdot \\vec{v} \\quad [\\text{kg} \\cdot \\text{m/s}]',
             cleanDraw: true,
             duration: 1200,
@@ -38,38 +38,40 @@ const Tema4 = (() => {
                     Draw.circle(ctx, truckX + 22 * s, truckY + truckH / 2, 9 * s, '#555', '#444', 1.5 * s);
                     Draw.circle(ctx, truckX + truckW - 10 * s, truckY + truckH / 2, 9 * s, '#555', '#444', 1.5 * s);
 
-                    Draw.label(ctx, 'm = 2000 kg', truckX + truckW / 2, truckY - 2 * s, '#fff', 10 * s);
+                    Draw.label(ctx, 'm = 5000 kg', truckX + truckW / 2, truckY - 2 * s, '#fff', 10 * s);
 
                     // Slow velocity arrow (short)
                     Draw.animatedArrow(ctx, truckX + truckW + 35 * s, truckY, truckX + truckW + 75 * s, truckY, '#c46b60', fp, 2.5 * s, 9 * s);
-                    if (fp > 0.5) Draw.label(ctx, 'v = 1 m/s', truckX + truckW + 90 * s, truckY - 12 * s, '#c46b60', 10 * s, false);
+                    if (fp > 0.5) Draw.label(ctx, 'v = 2 m/s', truckX + truckW + 90 * s, truckY - 12 * s, '#c46b60', 10 * s, false);
 
                     ctx.globalAlpha = 1;
                 }
 
-                // --- Bullet (tiny, fast) ---
+                // --- Motorcycle (lighter, faster) ---
                 if (p > 0.3) {
                     const fp = Math.min(1, (p - 0.3) / 0.35);
-                    const bulletX = 100 * s;
-                    const bulletY = botY;
+                    const motoX = 85 * s;
+                    const motoY = botY;
 
                     ctx.globalAlpha = fp;
-                    // Bullet body (small elongated shape)
-                    Draw.roundRect(ctx, bulletX - 10 * s, bulletY - 5 * s, 24 * s, 10 * s, 4 * s, '#d4956a');
-                    // Bullet tip
-                    ctx.fillStyle = '#c0844a';
+                    // Motorcycle body
+                    Draw.roundRect(ctx, motoX - 5 * s, motoY - 18 * s, 55 * s, 22 * s, 4 * s, '#d4956a');
+                    // Handlebar
+                    ctx.strokeStyle = '#c0844a';
+                    ctx.lineWidth = 2.5 * s;
                     ctx.beginPath();
-                    ctx.moveTo(bulletX + 14 * s, bulletY - 5 * s);
-                    ctx.lineTo(bulletX + 24 * s, bulletY);
-                    ctx.lineTo(bulletX + 14 * s, bulletY + 5 * s);
-                    ctx.closePath();
-                    ctx.fill();
+                    ctx.moveTo(motoX + 48 * s, motoY - 18 * s);
+                    ctx.lineTo(motoX + 54 * s, motoY - 30 * s);
+                    ctx.stroke();
+                    // Wheels
+                    Draw.circle(ctx, motoX + 5 * s, motoY + 8 * s, 8 * s, '#555', '#444', 1.5 * s);
+                    Draw.circle(ctx, motoX + 42 * s, motoY + 8 * s, 8 * s, '#555', '#444', 1.5 * s);
 
-                    Draw.label(ctx, 'm = 0.01 kg', bulletX + 5 * s, bulletY - 18 * s, '#d4956a', 10 * s, false);
+                    Draw.label(ctx, 'm = 200 kg', motoX + 25 * s, motoY - 36 * s, '#d4956a', 10 * s, false);
 
-                    // Fast velocity arrow (very long)
-                    Draw.animatedArrow(ctx, bulletX + 28 * s, bulletY, bulletX + 200 * s, bulletY, '#c46b60', fp, 2.5 * s, 9 * s);
-                    if (fp > 0.5) Draw.label(ctx, 'v = 200000 m/s', bulletX + 160 * s, bulletY - 12 * s, '#c46b60', 10 * s, false);
+                    // Velocity arrow (longer than truck's, proportional)
+                    Draw.animatedArrow(ctx, motoX + 62 * s, motoY, motoX + 170 * s, motoY, '#c46b60', fp, 2.5 * s, 9 * s);
+                    if (fp > 0.5) Draw.label(ctx, 'v = 50 m/s', motoX + 160 * s, motoY - 12 * s, '#c46b60', 10 * s, false);
 
                     ctx.globalAlpha = 1;
                 }
@@ -85,8 +87,8 @@ const Tema4 = (() => {
                     ctx.strokeStyle = '#81c784';
                     ctx.lineWidth = 1.5 * s;
                     ctx.strokeRect(bx - 80 * s, by - 28 * s, 160 * s, 56 * s);
-                    Draw.label(ctx, 'p = 2000 kg\u00b7m/s', bx, by - 10 * s, '#3d8b44', 11 * s);
-                    Draw.label(ctx, 'p = 2000 kg\u00b7m/s', bx, by + 10 * s, '#3d8b44', 11 * s);
+                    Draw.label(ctx, 'p = 10 000 kg\u00b7m/s', bx, by - 10 * s, '#3d8b44', 11 * s);
+                    Draw.label(ctx, 'p = 10 000 kg\u00b7m/s', bx, by + 10 * s, '#3d8b44', 11 * s);
                     Draw.label(ctx, 'Stessa p!', bx, by + 28 * s, '#5a9a6a', 10 * s, false);
 
                     // Equal sign connecting them
@@ -100,9 +102,9 @@ const Tema4 = (() => {
         // ---- Step 2: L'impulso ----
         {
             title: 'L\'impulso',
-            text: 'Per cambiare la <span class="term" data-term="quantita-di-moto">quantita di moto</span> di un oggetto devi applicare una <span class="term" data-term="forza">forza</span> per un certo tempo. Questo prodotto si chiama <span class="term" data-term="impulso">impulso</span>.<br><br>' +
-                'Un calcio breve e potente da lo stesso impulso di una spinta dolce e prolungata: conta il prodotto <span class="highlight">I = F &times; &Delta;t</span>.<br><br>' +
-                'L\'unita di misura e <b>N&middot;s</b> (newton per <span class="term" data-term="secondo">secondo</span>), equivalente a kg&middot;m/s.',
+            text: 'Per cambiare la <span class="term" data-term="quantita-di-moto">quantità di moto</span> di un oggetto devi applicare una <span class="term" data-term="forza">forza</span> per un certo tempo. Questo prodotto si chiama <span class="term" data-term="impulso">impulso</span>.<br><br>' +
+                'Un calcio breve e potente dà lo stesso impulso di una spinta dolce e prolungata: conta il prodotto <span class="highlight">I = F &times; &Delta;t</span>.<br><br>' +
+                'L\'unità di misura è <b>N&middot;s</b> (newton per <span class="term" data-term="secondo">secondo</span>), equivalente a kg&middot;m/s.',
             formula: 'I = F \\times \\Delta t \\quad [\\text{N} \\cdot \\text{s}]',
             cleanDraw: true,
             duration: 1200,
@@ -197,9 +199,9 @@ const Tema4 = (() => {
         // ---- Step 3: Impulso = variazione di qdm ----
         {
             title: 'Impulso = variazione di qdm',
-            text: 'Ecco il collegamento fondamentale: l\'<span class="term" data-term="impulso">impulso</span> che dai a un oggetto e <b>uguale</b> alla variazione della sua <span class="term" data-term="quantita-di-moto">quantita di moto</span>.<br><br>' +
-                'Se una palla ferma riceve un calcio e parte a velocita v, l\'impulso e esattamente <span class="highlight">I = &Delta;p = p<sub>f</sub> &minus; p<sub>i</sub></span>.<br><br>' +
-                'Questo e il <b>teorema dell\'impulso</b>: lega la causa (forza nel tempo) all\'effetto (cambio di moto).',
+            text: 'Ecco il collegamento fondamentale: l\'<span class="term" data-term="impulso">impulso</span> che dai a un oggetto è <b>uguale</b> alla variazione della sua <span class="term" data-term="quantita-di-moto">quantità di moto</span>.<br><br>' +
+                'Se una palla ferma riceve un calcio e parte a velocità v, l\'impulso è esattamente <span class="highlight">I = &Delta;p = p<sub>f</sub> &minus; p<sub>i</sub></span>.<br><br>' +
+                'Questo è il <b>teorema dell\'impulso</b>: lega la causa (forza nel tempo) all\'effetto (cambio di moto).',
             formula: 'I = \\Delta p = p_f - p_i = m v_f - m v_i',
             cleanDraw: true,
             duration: 1200,
@@ -286,9 +288,9 @@ const Tema4 = (() => {
         // ---- Step 4: La conservazione ----
         {
             title: 'La conservazione',
-            text: 'Ecco una legge potentissima: se due oggetti interagiscono <b>senza forze esterne</b>, la <span class="term" data-term="conservazione-qdm">quantita di moto totale si conserva</span>.<br><br>' +
-                'Due pattinatori fermi si spingono l\'un l\'altro: uno va a sinistra, l\'altro a destra. La quantita di moto totale era <span class="highlight">zero prima</span> e resta <span class="highlight">zero dopo</span>!<br><br>' +
-                'Le due quantita di moto sono <b>uguali e opposte</b>: si annullano a vicenda.',
+            text: 'Ecco una legge potentissima: se due oggetti interagiscono <b>senza forze esterne</b>, la <span class="term" data-term="conservazione-qdm">quantità di moto totale si conserva</span>.<br><br>' +
+                'Due pattinatori fermi si spingono l\'un l\'altro: uno va a sinistra, l\'altro a destra. La quantità di moto totale era <span class="highlight">zero prima</span> e resta <span class="highlight">zero dopo</span>!<br><br>' +
+                'Le due quantità di moto sono <b>uguali e opposte</b>: si annullano a vicenda.',
             formula: 'p_{\\text{tot,prima}} = p_{\\text{tot,dopo}} = 0',
             cleanDraw: true,
             duration: 1400,
@@ -405,9 +407,9 @@ const Tema4 = (() => {
         // ---- Step 5: Componenti x e y ----
         {
             title: 'Componenti x e y',
-            text: 'La quantita di moto e un <b>vettore</b>, quindi si conserva <span class="term" data-term="componente">componente</span> per componente: sia lungo x che lungo y, separatamente.<br><br>' +
+            text: 'La quantità di moto è un <b>vettore</b>, quindi si conserva <span class="term" data-term="componente">componente</span> per componente: sia lungo x che lungo y, separatamente.<br><br>' +
                 'In un urto 2D, puoi scrivere <b>due equazioni</b> indipendenti: <span class="highlight">p<sub>x,prima</sub> = p<sub>x,dopo</sub></span> e <span class="highlight">p<sub>y,prima</sub> = p<sub>y,dopo</sub></span>.<br><br>' +
-                'Questo e utilissimo: scomponi i vettori velocita in x e y, e risolvi separatamente!',
+                'Questo è utilissimo: scomponi i vettori velocità in x e y, e risolvi separatamente!',
             formula: '\\begin{cases} p_{x,\\text{prima}} = p_{x,\\text{dopo}} \\\\ p_{y,\\text{prima}} = p_{y,\\text{dopo}} \\end{cases}',
             cleanDraw: true,
             duration: 1400,
@@ -525,5 +527,21 @@ const Tema4 = (() => {
         }
     ];
 
-    return { steps };
+    const quiz = [
+        {
+            question: 'Una forza grande per poco tempo e una forza piccola per molto tempo possono dare lo stesso...',
+            options: ['Peso', 'Impulso', 'Massa', 'Volume'],
+            correct: 1,
+            explanation: 'L\'impulso \u00e8 J = F \u00d7 \u0394t. Una forza grande per poco tempo pu\u00f2 dare lo stesso impulso di una piccola per molto tempo. \u00c8 il prodotto che conta!'
+        },
+        {
+            question: 'In un urto tra due oggetti senza forze esterne, cosa si conserva?',
+            options: ['La velocit\u00e0', 'L\'energia cinetica (sempre)', 'La quantit\u00e0 di moto', 'La forza'],
+            correct: 2,
+            explanation: 'La quantit\u00e0 di moto totale si conserva sempre negli urti senza forze esterne: p\u2081 + p\u2082 (prima) = p\u2081 + p\u2082 (dopo).'
+        }
+    ];
+
+    return { id: 'impulso-qdm', title: 'Impulso e quantit\u00e0 di moto', icon: '\u{1F4A5}', category: 'Meccanica', order: 8, steps, quiz };
 })();
+if (typeof TopicRegistry !== 'undefined') TopicRegistry.register(Tema4);

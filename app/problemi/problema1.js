@@ -86,11 +86,40 @@ const Problema1 = (() => {
     function dirs(slope) {
         return {
             pxDx: -Math.cos(slope), pxDy: -Math.sin(slope), // parallela piano, verso basso
-            pyDx: Math.sin(slope),  pyDy: -Math.cos(slope), // perpendicolare piano, verso esterno
+            pyDx: -Math.sin(slope), pyDy: Math.cos(slope),   // perpendicolare piano, verso superficie
             tDx: Math.cos(slope),   tDy: Math.sin(slope),   // tensione, su lungo piano
-            nDx: -Math.sin(slope),  nDy: Math.cos(slope),   // normale, verso esterno (invertita)
+            nDx: -Math.sin(slope),  nDy: Math.cos(slope),   // normale (disegnata con segno meno → verso esterno)
         };
     }
+
+    const concept = {
+        title: 'Il piano inclinato e l\'equilibrio',
+        items: [
+            { name: 'Scomposizione del peso',
+              desc: 'Sul piano inclinato il <span class="term" data-term="peso">peso</span> si scompone in P<sub>x</sub> = P sin α (fa scivolare) e P<sub>y</sub> = P cos α (preme sulla superficie).' },
+            { name: 'Equilibrio statico',
+              desc: 'L\'oggetto è fermo → la somma delle <span class="term" data-term="forza">forze</span> è zero. Ogni componente del peso è bilanciata da un\'altra forza.' }
+        ],
+        formula: 'P_x = P \\sin\\alpha \\qquad P_y = P \\cos\\alpha',
+        draw(ctx, w, h, p) {
+            const s = Draw.S(w, h);
+            ctx.fillStyle = '#faf8f5'; ctx.fillRect(0, 0, w, h);
+            const bx = w*0.15, by = h*0.78, tx = w*0.65, ty = h*0.22, rx = w*0.65, ry = by;
+            ctx.globalAlpha = Math.min(1, p*3);
+            ctx.fillStyle = '#e8e3db';
+            ctx.beginPath(); ctx.moveTo(bx, by); ctx.lineTo(rx, ry); ctx.lineTo(tx, ty); ctx.closePath(); ctx.fill();
+            ctx.strokeStyle = '#b0a898'; ctx.lineWidth = 2*s; ctx.stroke();
+            const boxT = 0.4, boxX = bx+(tx-bx)*boxT, boxY = by+(ty-by)*boxT;
+            const ang = Math.atan2(by-ty, tx-bx);
+            ctx.save(); ctx.translate(boxX, boxY); ctx.rotate(-ang);
+            Draw.roundRect(ctx, -18*s, -18*s, 36*s, 18*s, 4*s, '#5a8fa8');
+            ctx.restore();
+            if (p > 0.15) { const fp = Math.min(1,(p-0.15)/0.25); Draw.animatedArrow(ctx, boxX, boxY, boxX, boxY+65*s, '#c46b60', fp, 3*s, 10*s); if (fp>0.5) Draw.label(ctx, 'P', boxX+14*s, boxY+40*s, '#c46b60', 13*s); }
+            if (p > 0.35) { const fp = Math.min(1,(p-0.35)/0.25); const dhx=Math.cos(ang),dhy=-Math.sin(ang),pxL=32*s; Draw.animatedArrow(ctx, boxX, boxY, boxX+dhx*pxL, boxY+dhy*pxL, '#9b6fb5', fp, 2.5*s, 9*s); if (fp>0.5) Draw.label(ctx, 'Px', boxX+dhx*pxL+10*s, boxY+dhy*pxL+12*s, '#9b6fb5', 11*s); }
+            if (p > 0.5) { const fp = Math.min(1,(p-0.5)/0.25); const pnx=Math.sin(ang),pny=Math.cos(ang),pyL=55*s; Draw.animatedArrow(ctx, boxX, boxY, boxX+pnx*pyL, boxY+pny*pyL, '#9b6fb5', fp, 2.5*s, 9*s); if (fp>0.5) Draw.label(ctx, 'Py', boxX+pnx*pyL+12*s, boxY+pny*pyL+6*s, '#9b6fb5', 11*s); }
+            if (p > 0.3) { ctx.globalAlpha = Math.min(1,(p-0.3)/0.3); Draw.arc(ctx, rx, ry, 30*s, Math.PI, Math.PI+ang, '#d4956a', 2*s); Draw.label(ctx, '\u03B1', rx-40*s, ry-14*s, '#d4956a', 12*s); }
+        }
+    };
 
     const steps = [
         {
@@ -174,13 +203,13 @@ const Problema1 = (() => {
 
                 // Py (perpendicolare al piano)
                 Draw.animatedArrow(ctx, ax, ay, ax+d.pyDx*pyL, ay+d.pyDy*pyL, '#9b6fb5', p, 2.5*s, 9*s);
-                if (p > 0.5) Draw.label(ctx, 'Py', ax+d.pyDx*pyL+18*s, ay+d.pyDy*pyL, '#9b6fb5', 14*s);
+                if (p > 0.5) Draw.label(ctx, 'Py', ax+d.pyDx*pyL+14*s, ay+d.pyDy*pyL+6*s, '#9b6fb5', 14*s);
 
                 // Angolo alfa al punto di applicazione
                 if (p > 0.6) {
                     ctx.globalAlpha = (p-0.6)/0.4;
-                    Draw.arc(ctx, ax, ay, 20*s, Math.PI/2, Math.PI/2 - angleRad, '#999', 1.2*s);
-                    Draw.label(ctx, '\u03B1', ax+10*s, ay+28*s, '#999', 10*s);
+                    Draw.arc(ctx, ax, ay, 20*s, Math.PI/2 - angleRad, Math.PI/2, '#999', 1.2*s);
+                    Draw.label(ctx, '\u03B1', ax+14*s, ay+24*s, '#999', 10*s);
                 }
             }
         },
@@ -253,7 +282,7 @@ const Problema1 = (() => {
                 if (p > 0.4) Draw.label(ctx, 'T', ax+d.tDx*tL+12*s, ay+d.tDy*tL-12*s, '#5a9a6a', 17*s);
 
                 // Normale N (perpendicolare, verso esterno) — stessa lunghezza di Py
-                // Nota: nDx/nDy sono invertiti rispetto a pyDx/pyDy
+                // nDx/nDy = pyDx/pyDy, ma disegnata con segno meno → direzione opposta a Py
                 Draw.animatedArrow(ctx, ax, ay, ax-d.nDx*nL*p, ay-d.nDy*nL*p, '#5a8fa8', p, 3*s, 11*s);
                 if (p > 0.4) Draw.label(ctx, 'N', ax-d.nDx*nL-14*s, ay-d.nDy*nL-8*s, '#5a8fa8', 17*s);
 
@@ -315,5 +344,5 @@ const Problema1 = (() => {
         }
     ];
 
-    return { steps, statement };
+    return { steps, statement, concept };
 })();

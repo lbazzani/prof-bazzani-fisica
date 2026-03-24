@@ -3,7 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Il Prof Bazzani - Teoria di fisica</title>
+    <title>Il Prof Bazzani - Lezioni di fisica animate</title>
+    <meta name="description" content="Lezioni di fisica animate e interattive: notazione scientifica, vettori, leggi di Newton, forze, equilibrio, piano inclinato, momenti, impulso e quantità di moto.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://prof.bazzani.info/teoria.html">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://prof.bazzani.info/teoria.html">
+    <meta property="og:title" content="Lezioni di fisica animate - Il Prof Bazzani">
+    <meta property="og:description" content="8 lezioni di fisica con animazioni interattive: dalle basi dei vettori alle leggi di Newton, dal piano inclinato all'impulso.">
+    <meta property="og:site_name" content="Il Prof Bazzani">
+    <meta property="og:locale" content="it_IT">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤓</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -11,6 +20,15 @@
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
     <link rel="stylesheet" href="style.css" id="app-css">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-QH76MY76LK"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-QH76MY76LK');
+    </script>
 </head>
 <body>
     <header class="header">
@@ -31,74 +49,20 @@
         </div>
     </header>
 
-    <!-- Modale Glossario -->
-    <div class="glossario-modal" id="glossario-modal">
-        <div class="glossario-panel">
-            <div class="glossario-header">
-                <h2>📖 Glossario</h2>
-                <button class="glossario-close" id="glossario-close" aria-label="Chiudi">&times;</button>
-            </div>
-            <div class="glossario-search-box">
-                <input type="text" id="glossario-search" placeholder="Cerca un termine..." autocomplete="off">
-            </div>
-            <div class="glossario-body" id="glossario-body"></div>
-        </div>
-    </div>
 
-    <!-- Tab temi -->
-    <nav class="problem-tabs">
-        <button class="tab active" data-problem="0">
-            <span class="tab-icon">🔬</span>
-            <span class="tab-label">Notazione sci.</span>
-        </button>
-        <button class="tab" data-problem="1">
-            <span class="tab-icon">➡️</span>
-            <span class="tab-label">Vettori</span>
-        </button>
-        <button class="tab" data-problem="2">
-            <span class="tab-icon">🍎</span>
-            <span class="tab-label">Newton</span>
-        </button>
-        <button class="tab" data-problem="3">
-            <span class="tab-icon">💪</span>
-            <span class="tab-label">Forze</span>
-        </button>
-        <button class="tab" data-problem="4">
-            <span class="tab-icon">📋</span>
-            <span class="tab-label">DCL</span>
-        </button>
-        <button class="tab" data-problem="5">
-            <span class="tab-icon">📐</span>
-            <span class="tab-label">Piano inclinato</span>
-        </button>
-        <button class="tab" data-problem="6">
-            <span class="tab-icon">🔧</span>
-            <span class="tab-label">Momenti</span>
-        </button>
-        <button class="tab" data-problem="7">
-            <span class="tab-icon">💥</span>
-            <span class="tab-label">Impulso</span>
-        </button>
-    </nav>
+    <!-- Tab temi (populated dynamically by teoria-app.js) -->
+    <nav class="problem-tabs" id="topic-tabs"></nav>
 
-    <!-- Dropdown mobile -->
+    <!-- Dropdown mobile (populated dynamically by teoria-app.js) -->
     <div class="tab-dropdown">
-        <select id="tab-select">
-            <option value="0">🔬  Notazione scientifica</option>
-            <option value="1">➡️  I vettori</option>
-            <option value="2">🍎  Leggi di Newton</option>
-            <option value="3">💪  Forze ed equilibrio</option>
-            <option value="4">📋  Diagramma corpo libero</option>
-            <option value="5">📐  Piano inclinato</option>
-            <option value="6">🔧  Momenti delle forze</option>
-            <option value="7">💥  Impulso e quantità di moto</option>
-        </select>
+        <select id="tab-select"></select>
     </div>
 
     <main class="main-content">
         <div class="content-grid">
             <div class="canvas-container">
                 <canvas id="animation-canvas" width="600" height="400"></canvas>
+                <div id="interactive-controls" class="interactive-controls"></div>
             </div>
             <div class="explanation-container">
                 <div class="step-badge">
@@ -108,6 +72,16 @@
                 <div id="step-text" class="step-text"></div>
                 <div id="step-formula" class="step-formula"></div>
             </div>
+        </div>
+
+        <div id="quiz-panel" class="quiz-panel" style="display:none">
+            <div class="quiz-header">
+                <h2>🎯 Mettiti alla prova!</h2>
+                <p class="quiz-subtitle">Vediamo se hai capito i concetti chiave</p>
+            </div>
+            <div id="quiz-questions" class="quiz-questions"></div>
+            <div id="quiz-result" class="quiz-result"></div>
+            <button id="quiz-back" class="nav-btn">← Torna alla lezione</button>
         </div>
 
         <div class="step-navigation">
@@ -128,6 +102,16 @@
         </p>
     </footer>
 
+    <!-- TopicRegistry must be defined before tema files load -->
+    <script>
+    const TopicRegistry = {
+        _topics: [],
+        register(topic) { this._topics.push(topic); },
+        getAll() { return this._topics.sort((a, b) => (a.order || 0) - (b.order || 0)); }
+    };
+    window.TopicRegistry = TopicRegistry;
+    </script>
+
     <script>
     const APP_VERSION = Date.now();
     function loadScript(src) {
@@ -138,6 +122,7 @@
     }
     document.getElementById('app-css').href = 'style.css?v=' + APP_VERSION;
     loadScript('draw.js')
+        .then(() => loadScript('progress.js'))
         .then(() => loadScript('glossario.js'))
         .then(() => loadScript('teoria/tema1.js'))
         .then(() => loadScript('teoria/tema2.js'))
@@ -147,6 +132,7 @@
         .then(() => loadScript('teoria/tema6.js'))
         .then(() => loadScript('teoria/tema7.js'))
         .then(() => loadScript('teoria/tema8.js'))
+        .then(() => loadScript('teoria/tema9.js'))
         .then(() => loadScript('teoria/teoria-app.js'));
     </script>
 </body>

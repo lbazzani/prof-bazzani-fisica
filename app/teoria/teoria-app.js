@@ -5,29 +5,68 @@ const TeoriaApp = (() => {
     let currentTopic = 0, currentStep = 0;
     let topics = [];
     let canvas, ctx, animationId = null, animStartTime = 0;
+    let controlValues = {};
+    let quizActive = false, quizAnswered = 0, quizCorrect = 0;
     const ANIM_DURATION = 800;
 
     const $ = (sel) => document.querySelector(sel);
     const $$ = (sel) => document.querySelectorAll(sel);
     const isMobile = () => window.innerWidth <= 600;
+    const track = (event, params) => { if (typeof gtag === 'function') gtag('event', event, params); };
+
+    function buildTabs() {
+        topics = TopicRegistry.getAll();
+
+        // Desktop tabs
+        const tabsNav = $('#topic-tabs');
+        if (tabsNav) {
+            tabsNav.innerHTML = '';
+            topics.forEach((t, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'tab' + (i === 0 ? ' active' : '');
+                btn.dataset.problem = i;
+                btn.innerHTML = '<span class="tab-icon">' + t.icon + '</span><span class="tab-label">' + t.title + '</span>';
+                btn.addEventListener('click', () => switchTopic(i));
+                tabsNav.appendChild(btn);
+            });
+        }
+
+        // Mobile dropdown
+        const sel = $('#tab-select');
+        if (sel) {
+            sel.innerHTML = '';
+            topics.forEach((t, i) => {
+                const opt = document.createElement('option');
+                opt.value = i;
+                opt.textContent = t.icon + '  ' + t.title;
+                sel.appendChild(opt);
+            });
+            sel.addEventListener('change', () => switchTopic(parseInt(sel.value)));
+        }
+    }
 
     function init() {
         canvas = $('#animation-canvas');
         ctx = canvas.getContext('2d');
-        topics = [Tema5, Tema6, Tema8, Tema1, Tema7, Tema2, Tema3, Tema4];
-
-        $$('.tab').forEach(tab => {
-            tab.addEventListener('click', () => switchTopic(parseInt(tab.dataset.problem)));
-        });
-
-        // Mobile dropdown
-        const sel = $('#tab-select');
-        if (sel) sel.addEventListener('change', () => switchTopic(parseInt(sel.value)));
+        buildTabs();
 
         $('#btn-prev').addEventListener('click', () => goStep(currentStep - 1));
-        $('#btn-next').addEventListener('click', () => goStep(currentStep + 1));
+        $('#btn-next').addEventListener('click', () => {
+            const topic = topics[currentTopic];
+            const isLast = currentStep === topic.steps.length - 1;
+            const hasQuiz = topic.quiz && topic.quiz.length > 0;
+            if (isLast && hasQuiz) {
+                showQuiz();
+            } else {
+                goStep(currentStep + 1);
+            }
+        });
+
+        const quizBackBtn = $('#quiz-back');
+        if (quizBackBtn) quizBackBtn.addEventListener('click', hideQuiz);
 
         document.addEventListener('keydown', (e) => {
+            if (quizActive) return;
             if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); goStep(currentStep + 1); }
             if (e.key === 'ArrowLeft') { e.preventDefault(); goStep(currentStep - 1); }
         });
@@ -59,11 +98,11 @@ const TeoriaApp = (() => {
 
     function handleResize() {
         const container = $('.canvas-container');
-        const pad = isMobile() ? 12 : 24;
-        const w = container.clientWidth - pad;
-        const ratio = isMobile() ? 0.72 : 0.65;
-        const maxH = isMobile() ? 280 : 380;
-        const h = Math.min(maxH, w * ratio);
+        const pad = isMobile() ? 4 : 24;
+        const w = Math.max(1, container.clientWidth - pad);
+        const ratio = isMobile() ? 0.78 : 0.65;
+        const maxH = isMobile() ? 300 : 380;
+        const h = Math.max(1, Math.min(maxH, w * ratio));
         const dpr = window.devicePixelRatio || 1;
         canvas.width = w * dpr; canvas.height = h * dpr;
         canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
@@ -73,11 +112,13 @@ const TeoriaApp = (() => {
 
     function switchTopic(idx) {
         currentTopic = idx; currentStep = 0;
+        hideQuiz();
         $$('.tab').forEach((tab, i) => tab.classList.toggle('active', i === idx));
         const sel = $('#tab-select');
         if (sel) sel.value = idx;
 
         const topic = topics[idx];
+        track('select_content', { content_type: 'teoria', item_id: `tema_${idx}`, content_id: topic?.title || `Tema ${idx}` });
         const dotsContainer = $('#step-dots');
         dotsContainer.innerHTML = '';
         topic.steps.forEach((_, i) => {
@@ -93,13 +134,86 @@ const TeoriaApp = (() => {
         goStep(0);
     }
 
+    function setupInteractiveControls(step) {
+        const container = $('#interactive-controls');
+        if (!container) return;
+
+        // Clear previous controls
+        container.innerHTML = '';
+        container.classList.remove('active');
+        controlValues = {};
+
+        if (!step || !step.interactive) return;
+
+        const interactive = step.interactive;
+
+        // Build sliders
+        if (interactive.sliders && interactive.sliders.length) {
+            interactive.sliders.forEach(slider => {
+                controlValues[slider.id] = slider.default !== undefined ? slider.default : slider.min;
+
+                const wrapper = document.createElement('div');
+                wrapper.className = 'interactive-slider';
+
+                const label = document.createElement('label');
+                const valueSpan = document.createElement('span');
+                valueSpan.className = 'slider-value';
+                valueSpan.textContent = controlValues[slider.id] + (slider.unit || '');
+                label.textContent = slider.label + ': ';
+                label.appendChild(valueSpan);
+
+                const input = document.createElement('input');
+                input.type = 'range';
+                input.min = slider.min;
+                input.max = slider.max;
+                input.step = slider.step || 1;
+                input.value = controlValues[slider.id];
+
+                input.addEventListener('input', () => {
+                    const val = parseFloat(input.value);
+                    controlValues[slider.id] = val;
+                    valueSpan.textContent = val + (slider.unit || '');
+                    // Re-render canvas with current animation progress (fully drawn)
+                    renderCurrentStep(1);
+                });
+
+                wrapper.appendChild(label);
+                wrapper.appendChild(input);
+                container.appendChild(wrapper);
+            });
+
+            container.classList.add('active');
+        }
+    }
+
+    function teardownInteractiveControls() {
+        const container = $('#interactive-controls');
+        if (!container) return;
+        container.innerHTML = '';
+        container.classList.remove('active');
+        controlValues = {};
+    }
+
     function goStep(idx) {
         const topic = topics[currentTopic];
         if (idx < 0 || idx >= topic.steps.length) return;
         currentStep = idx;
         const step = topic.steps[idx];
 
+        // Track progress
+        if (typeof Progress !== 'undefined' && topic.id) {
+            Progress.markTheoryStep(topic.id, idx, topic.steps.length);
+        }
+        // GA event
+        track('lesson_step', { step: idx + 1, total_steps: topic.steps.length, topic: topic.title || `Tema ${currentTopic}` });
+        if (idx === topic.steps.length - 1) {
+            track('lesson_complete', { topic: topic.title || `Tema ${currentTopic}` });
+        }
+
         if (typeof Glossario !== 'undefined') Glossario.closeCallout();
+
+        // Setup or teardown interactive controls
+        setupInteractiveControls(step);
 
         $('#step-number').textContent = idx + 1;
         const titleEl = $('#step-title'), textEl = $('#step-text'), formulaEl = $('#step-formula');
@@ -135,10 +249,145 @@ const TeoriaApp = (() => {
         });
 
         $('#btn-prev').disabled = idx === 0;
-        $('#btn-next').disabled = idx === topic.steps.length - 1;
+
+        const isLast = idx === topic.steps.length - 1;
+        const hasQuiz = topic.quiz && topic.quiz.length > 0;
+        const nextBtn = $('#btn-next');
+
+        if (isLast && hasQuiz) {
+            nextBtn.disabled = false;
+            nextBtn.innerHTML = '🎯 Quiz <span class="nav-arrow">→</span>';
+        } else {
+            nextBtn.disabled = isLast;
+            nextBtn.innerHTML = 'Avanti <span class="nav-arrow">→</span>';
+        }
 
         if (isMobile()) $('.canvas-container').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         startAnimation();
+    }
+
+    // ===== Quiz Functions =====
+
+    function showQuiz() {
+        const topic = topics[currentTopic];
+        if (!topic.quiz || !topic.quiz.length) return;
+
+        quizActive = true;
+        quizAnswered = 0;
+        quizCorrect = 0;
+
+        const quizPanel = $('#quiz-panel');
+        const contentGrid = $('.content-grid');
+        const stepNav = $('.step-navigation');
+
+        contentGrid.style.display = 'none';
+        stepNav.style.display = 'none';
+        quizPanel.style.display = 'block';
+
+        const questionsContainer = $('#quiz-questions');
+        const resultContainer = $('#quiz-result');
+        questionsContainer.innerHTML = '';
+        resultContainer.innerHTML = '';
+        resultContainer.className = 'quiz-result';
+
+        const markers = ['A', 'B', 'C', 'D'];
+
+        topic.quiz.forEach((q, qi) => {
+            const qDiv = document.createElement('div');
+            qDiv.className = 'quiz-question';
+            qDiv.dataset.index = qi;
+
+            const qText = document.createElement('div');
+            qText.className = 'quiz-question-text';
+            qText.innerHTML = '<span class="quiz-question-number">' + (qi + 1) + '</span>' + q.question;
+            qDiv.appendChild(qText);
+
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'quiz-options';
+
+            q.options.forEach((opt, oi) => {
+                const btn = document.createElement('button');
+                btn.className = 'quiz-option';
+                btn.innerHTML = '<span class="quiz-option-marker">' + markers[oi] + '</span><span>' + opt + '</span>';
+                btn.addEventListener('click', () => handleQuizAnswer(qi, oi, qDiv, optionsDiv));
+                optionsDiv.appendChild(btn);
+            });
+
+            qDiv.appendChild(optionsDiv);
+            questionsContainer.appendChild(qDiv);
+        });
+
+        if (isMobile()) quizPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function handleQuizAnswer(questionIdx, optionIdx, qDiv, optionsDiv) {
+        if (qDiv.classList.contains('answered')) return;
+
+        const topic = topics[currentTopic];
+        const q = topic.quiz[questionIdx];
+        const isCorrect = optionIdx === q.correct;
+
+        qDiv.classList.add('answered');
+        quizAnswered++;
+        if (isCorrect) quizCorrect++;
+
+        // Mark all options as disabled, highlight correct/wrong
+        const buttons = optionsDiv.querySelectorAll('.quiz-option');
+        buttons.forEach((btn, bi) => {
+            btn.classList.add('disabled');
+            if (bi === q.correct) {
+                btn.classList.add('correct');
+            }
+            if (bi === optionIdx && !isCorrect) {
+                btn.classList.add('wrong');
+            }
+        });
+
+        // Show explanation
+        const explDiv = document.createElement('div');
+        explDiv.className = 'quiz-explanation';
+        explDiv.textContent = (isCorrect ? 'Esatto! ' : 'Non proprio... ') + q.explanation;
+        qDiv.appendChild(explDiv);
+
+        // Check if all questions answered
+        if (quizAnswered === topic.quiz.length) {
+            setTimeout(() => showQuizResult(topic.quiz.length), 400);
+        }
+    }
+
+    function showQuizResult(total) {
+        const resultContainer = $('#quiz-result');
+        const msgs = [
+            'Ripassa un po\' la lezione e riprova!',
+            'Buon inizio, puoi fare ancora meglio!',
+            'Bravo, quasi perfetto!',
+            'Perfetto, hai capito tutto!'
+        ];
+
+        let msgIdx;
+        const ratio = quizCorrect / total;
+        if (ratio <= 0.33) msgIdx = 0;
+        else if (ratio <= 0.66) msgIdx = 1;
+        else if (ratio < 1) msgIdx = 2;
+        else msgIdx = 3;
+
+        resultContainer.innerHTML =
+            '<div class="quiz-result-score">' + quizCorrect + '/' + total + ' corrette!</div>' +
+            '<div class="quiz-result-msg">' + msgs[msgIdx] + '</div>';
+        resultContainer.className = 'quiz-result visible';
+
+        if (isMobile()) resultContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function hideQuiz() {
+        quizActive = false;
+        const quizPanel = $('#quiz-panel');
+        const contentGrid = $('.content-grid');
+        const stepNav = $('.step-navigation');
+
+        if (quizPanel) quizPanel.style.display = 'none';
+        if (contentGrid) contentGrid.style.display = '';
+        if (stepNav) stepNav.style.display = '';
     }
 
     function startAnimation() {
@@ -170,14 +419,21 @@ const TeoriaApp = (() => {
         const currentStepObj = topic.steps[currentStep];
         const clean = currentStepObj && currentStepObj.cleanDraw;
 
-        for (let i = 0; i < currentStep; i++) {
+        let startFrom = 0;
+        if (!clean) {
+            for (let i = currentStep - 1; i >= 0; i--) {
+                if (topic.steps[i].cleanDraw) { startFrom = i + 1; break; }
+            }
+        }
+
+        for (let i = startFrom; i < currentStep; i++) {
             if (clean) break;
-            if (topic.steps[i].draw) { ctx.globalAlpha = 1; topic.steps[i].draw(ctx, w, h, 1); }
+            if (topic.steps[i].draw) { ctx.globalAlpha = 1; topic.steps[i].draw(ctx, w, h, 1, controlValues); }
         }
 
         if (currentStepObj && currentStepObj.draw) {
             ctx.globalAlpha = progress;
-            currentStepObj.draw(ctx, w, h, progress);
+            currentStepObj.draw(ctx, w, h, progress, controlValues);
         }
 
         ctx.restore();

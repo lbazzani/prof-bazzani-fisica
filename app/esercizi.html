@@ -3,7 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Il Prof Bazzani - Esercizi di fisica</title>
+    <title>Il Prof Bazzani - Esercizi svolti di fisica</title>
+    <meta name="description" content="Esercizi di fisica svolti passo passo con animazioni: piano inclinato, scala a pioli con momenti delle forze, biliardo con impulso e quantità di moto.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://prof.bazzani.info/esercizi.html">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://prof.bazzani.info/esercizi.html">
+    <meta property="og:title" content="Esercizi svolti di fisica - Il Prof Bazzani">
+    <meta property="og:description" content="Tre problemi di fisica risolti passo passo con animazioni: piano inclinato, momenti delle forze, impulso e quantità di moto.">
+    <meta property="og:site_name" content="Il Prof Bazzani">
+    <meta property="og:locale" content="it_IT">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤓</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -13,6 +22,15 @@
     <link rel="stylesheet" href="style.css" id="app-css">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-QH76MY76LK"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-QH76MY76LK');
+    </script>
     <meta http-equiv="Expires" content="0">
 </head>
 <body>
@@ -35,19 +53,6 @@
         </div>
     </header>
 
-    <!-- Modale Glossario -->
-    <div class="glossario-modal" id="glossario-modal">
-        <div class="glossario-panel">
-            <div class="glossario-header">
-                <h2>📖 Glossario</h2>
-                <button class="glossario-close" id="glossario-close" aria-label="Chiudi">&times;</button>
-            </div>
-            <div class="glossario-search-box">
-                <input type="text" id="glossario-search" placeholder="Cerca un termine..." autocomplete="off">
-            </div>
-            <div class="glossario-body" id="glossario-body"></div>
-        </div>
-    </div>
 
     <!-- Tab di navigazione problemi -->
     <nav class="problem-tabs">
@@ -74,6 +79,24 @@
         </select>
     </div>
 
+    <!-- Overlay concetto chiave -->
+    <div class="concept-overlay" id="concept-overlay">
+        <div class="concept-card">
+            <div class="concept-badge">💡 Concetto chiave</div>
+            <h2 class="concept-title" id="concept-title"></h2>
+            <div class="concept-body">
+                <div class="concept-canvas-wrap">
+                    <canvas id="concept-canvas" width="400" height="280"></canvas>
+                </div>
+                <div class="concept-text" id="concept-text"></div>
+                <div class="concept-formula" id="concept-formula"></div>
+            </div>
+            <div class="concept-actions">
+                <button class="concept-skip" id="concept-skip">Vai all'esercizio →</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Contenuto principale -->
     <main class="main-content">
         <!-- Box enunciato del problema (collassabile) -->
@@ -91,6 +114,7 @@
             <!-- Area animazione -->
             <div class="canvas-container">
                 <canvas id="animation-canvas" width="600" height="400"></canvas>
+                <div id="interactive-controls" class="interactive-controls"></div>
             </div>
 
             <!-- Area spiegazione -->
@@ -140,6 +164,7 @@
     document.getElementById('app-css').href = 'style.css?v=' + APP_VERSION;
     // Carica gli script in ordine
     loadScript('draw.js')
+        .then(() => loadScript('progress.js'))
         .then(() => loadScript('glossario.js'))
         .then(() => loadScript('problemi/problema1.js'))
         .then(() => loadScript('problemi/problema2.js'))

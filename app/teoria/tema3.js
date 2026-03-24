@@ -4,10 +4,10 @@ const Tema3 = (() => {
     const steps = [
         // ---- Step 1: Cos'e la rotazione? ----
         {
-            title: "Cos'e la rotazione?",
-            text: 'Prova a spingere una porta vicino ai <b>cardini</b>: fatichi tantissimo! Spingila dalla maniglia, lontano dai cardini, e si apre con facilita.<br><br>' +
-                'Questo accade perche per far <b>ruotare</b> un oggetto non basta una <span class="term" data-term="forza">forza</span>: conta anche <b>dove</b> la applichi. La grandezza che misura l\'effetto rotatorio di una forza si chiama <span class="term" data-term="momento">momento</span> della forza.<br><br>' +
-                '<b>Regola pratica:</b> piu sei lontano dal perno, meno forza ti serve per ottenere lo stesso effetto.',
+            title: "Cos'è la rotazione?",
+            text: 'Prova a spingere una porta vicino ai <b>cardini</b>: fatichi tantissimo! Spingila dalla maniglia, lontano dai cardini, e si apre con facilità.<br><br>' +
+                'Questo accade perché per far <b>ruotare</b> un oggetto non basta una <span class="term" data-term="forza">forza</span>: conta anche <b>dove</b> la applichi. La grandezza che misura l\'effetto rotatorio di una forza si chiama <span class="term" data-term="momento">momento</span> della forza.<br><br>' +
+                '<b>Regola pratica:</b> più sei lontano dal perno, meno forza ti serve per ottenere lo stesso effetto.',
             formula: null,
             cleanDraw: true,
             duration: 1200,
@@ -91,8 +91,8 @@ const Tema3 = (() => {
         {
             title: 'Il momento di una forza',
             text: 'Il <span class="term" data-term="momento">momento</span> di una forza misura quanto quella forza riesce a far ruotare un oggetto attorno a un punto fisso.<br><br>' +
-                'Pensa a una <b>chiave inglese</b> su un bullone: piu la chiave e lunga, piu e facile svitare. La distanza tra il punto di applicazione della <span class="term" data-term="forza">forza</span> e il perno si chiama <span class="term" data-term="braccio">braccio</span>.<br><br>' +
-                'La formula e semplice: <span class="highlight">M = F &times; b</span>. Il momento si misura in <b>N&middot;m</b> (newton per metro).',
+                'Pensa a una <b>chiave inglese</b> su un bullone: più la chiave è lunga, più è facile svitare. La distanza tra il punto di applicazione della <span class="term" data-term="forza">forza</span> e il perno si chiama <span class="term" data-term="braccio">braccio</span>.<br><br>' +
+                'La formula è semplice: <span class="highlight">M = F &times; b</span>. Il momento si misura in <b>N&middot;m</b> (newton per metro).',
             formula: 'M = F \\times b \\quad [\\text{N} \\cdot \\text{m}]',
             cleanDraw: true,
             duration: 1200,
@@ -177,9 +177,9 @@ const Tema3 = (() => {
         // ---- Step 3: Il braccio: la distanza che conta ----
         {
             title: 'Il braccio: la distanza che conta',
-            text: 'Attenzione: il <span class="term" data-term="braccio">braccio</span> <b>non</b> e la distanza dal <span class="term" data-term="perno">perno</span> al punto di applicazione della forza! E la distanza <b>perpendicolare</b> dal perno alla <b>retta d\'azione</b> della forza.<br><br>' +
-                'Immagina di prolungare la freccia della forza all\'infinito: la retta che ottieni e la <i>retta d\'azione</i>. Il braccio e la distanza piu corta dal perno a questa retta.<br><br>' +
-                'Se la forza passa proprio per il perno, il braccio e <span class="highlight">zero</span> e il momento e nullo: nessuna rotazione!',
+            text: 'Attenzione: il <span class="term" data-term="braccio">braccio</span> <b>non</b> è la distanza dal <span class="term" data-term="perno">perno</span> al punto di applicazione della forza! È la distanza <b>perpendicolare</b> dal perno alla <b>retta d\'azione</b> della forza.<br><br>' +
+                'Immagina di prolungare la freccia della forza all\'infinito: la retta che ottieni è la <i>retta d\'azione</i>. Il braccio è la distanza più corta dal perno a questa retta.<br><br>' +
+                'Se la forza passa proprio per il perno, il braccio è <span class="highlight">zero</span> e il momento è nullo: nessuna rotazione!',
             formula: 'b = d \\cdot \\sin\\theta \\quad \\text{(distanza perpendicolare)}',
             cleanDraw: true,
             duration: 1200,
@@ -306,34 +306,61 @@ const Tema3 = (() => {
             }
         },
 
-        // ---- Step 4: Equilibrio dei momenti ----
+        // ---- Step 4: Equilibrio dei momenti (interattivo) ----
         {
             title: 'Equilibrio dei momenti',
-            text: 'Un\'altalena e in <span class="term" data-term="equilibrio">equilibrio</span> quando i momenti delle forze da un lato e dall\'altro si bilanciano.<br><br>' +
-                'Una persona <b>pesante</b> puo bilanciarsi con una <b>leggera</b> se si siede piu vicina al perno. Una persona leggera deve sedersi piu lontano.<br><br>' +
-                'La condizione di equilibrio e: <span class="highlight">M<sub>1</sub> = M<sub>2</sub></span>, cioe <span class="highlight">F<sub>1</sub> &times; b<sub>1</sub> = F<sub>2</sub> &times; b<sub>2</sub></span>.',
-            formula: 'F_1 \\times b_1 = F_2 \\times b_2',
+            text: 'Un\'altalena è in <span class="term" data-term="equilibrio">equilibrio</span> quando i momenti si bilanciano. Prova a spostare le due figure e cambiare i pesi: riesci a trovare l\'equilibrio?<br><br>' +
+                '<b>Regola:</b> Momento₁ = Momento₂ quando F₁ × b₁ = F₂ × b₂',
+            formula: 'M_1 = F_1 \\times b_1 \\qquad M_2 = F_2 \\times b_2',
             cleanDraw: true,
-            duration: 1200,
-            draw(ctx, w, h, p) {
+            interactive: {
+                sliders: [
+                    { id: 'peso1', label: 'Peso sinistro', min: 20, max: 100, step: 5, default: 60, unit: ' N' },
+                    { id: 'dist1', label: 'Distanza sinistra', min: 1, max: 5, step: 0.5, default: 2, unit: ' m' },
+                    { id: 'peso2', label: 'Peso destro', min: 20, max: 100, step: 5, default: 40, unit: ' N' },
+                    { id: 'dist2', label: 'Distanza destra', min: 1, max: 5, step: 0.5, default: 3, unit: ' m' }
+                ]
+            },
+            draw(ctx, w, h, p, controls) {
                 const s = Draw.S(w, h);
                 ctx.fillStyle = '#faf8f5';
                 ctx.fillRect(0, 0, w, h);
 
+                // Read slider values (with defaults)
+                const peso1 = (controls && controls.peso1) || 60;
+                const dist1 = (controls && controls.dist1) || 2;
+                const peso2 = (controls && controls.peso2) || 40;
+                const dist2 = (controls && controls.dist2) || 3;
+
+                // Calculate moments
+                const M1 = peso1 * dist1;
+                const M2 = peso2 * dist2;
+                const diff = M1 - M2;
+                const sum = M1 + M2;
+                const ratio = sum > 0 ? diff / sum : 0;
+                const isBalanced = Math.abs(diff) / Math.max(M1, M2, 1) < 0.05;
+
+                // Tilt angle: proportional to imbalance, clamped to ±15 degrees
+                const maxAngle = 15 * Math.PI / 180;
+                const targetAngle = Math.max(-maxAngle, Math.min(maxAngle, ratio * maxAngle * 3));
+                // Negative angle = left side goes down (M1 > M2)
+                const tiltAngle = targetAngle * p;
+
+                // Layout
                 const pivotX = w * 0.5;
-                const pivotY = h * 0.6;
-                const barHalf = 180 * s;
+                const pivotY = h * 0.52;
+                const barHalf = Math.min(200, w * 0.38) * s;
+                const triH = 36 * s;
 
                 // Ground line
                 ctx.strokeStyle = '#d0c8bb';
                 ctx.lineWidth = 1.5 * s;
                 ctx.beginPath();
-                ctx.moveTo(pivotX - barHalf - 30 * s, pivotY + 38 * s);
-                ctx.lineTo(pivotX + barHalf + 30 * s, pivotY + 38 * s);
+                ctx.moveTo(pivotX - barHalf - 30 * s, pivotY + triH + 2 * s);
+                ctx.lineTo(pivotX + barHalf + 30 * s, pivotY + triH + 2 * s);
                 ctx.stroke();
 
-                // Pivot triangle
-                const triH = 36 * s;
+                // Pivot / fulcrum triangle
                 ctx.fillStyle = '#b5a898';
                 ctx.beginPath();
                 ctx.moveTo(pivotX, pivotY);
@@ -342,80 +369,111 @@ const Tema3 = (() => {
                 ctx.closePath();
                 ctx.fill();
 
-                // Balanced bar (horizontal)
+                // ---- Draw tilted beam and figures ----
+                ctx.save();
+                ctx.translate(pivotX, pivotY);
+                ctx.rotate(tiltAngle);
+
+                // Beam / plank
                 ctx.strokeStyle = '#8a7e70';
                 ctx.lineWidth = 7 * s;
                 ctx.lineCap = 'round';
                 ctx.beginPath();
-                ctx.moveTo(pivotX - barHalf, pivotY);
-                ctx.lineTo(pivotX + barHalf, pivotY);
+                ctx.moveTo(-barHalf, 0);
+                ctx.lineTo(barHalf, 0);
                 ctx.stroke();
 
-                // Heavy person (close to center, left side)
-                const heavyX = pivotX - 55 * s;
-                const lightX = pivotX + 130 * s;
-
-                if (p > 0.15) {
-                    const fp = Math.min(1, (p - 0.15) / 0.3);
-
-                    // Heavy person: big rectangle
-                    ctx.globalAlpha = fp;
-                    Draw.roundRect(ctx, heavyX - 18 * s, pivotY - 55 * s, 36 * s, 55 * s, 5 * s, '#c46b60');
-                    Draw.circle(ctx, heavyX, pivotY - 68 * s, 13 * s, '#c46b60', null);
-                    Draw.label(ctx, '80 kg', heavyX, pivotY - 40 * s, '#fff', 9 * s);
-
-                    // Weight arrow for heavy
-                    Draw.animatedArrow(ctx, heavyX, pivotY + 6 * s, heavyX, pivotY + 30 * s, '#c46b60', fp, 2 * s, 8 * s);
-                    ctx.globalAlpha = 1;
+                // Tick marks on beam (every 1 m)
+                ctx.strokeStyle = '#aaa';
+                ctx.lineWidth = 1 * s;
+                for (let i = -5; i <= 5; i++) {
+                    if (i === 0) continue;
+                    const tx = (i / 5) * barHalf;
+                    ctx.beginPath();
+                    ctx.moveTo(tx, -4 * s);
+                    ctx.lineTo(tx, 4 * s);
+                    ctx.stroke();
                 }
 
-                if (p > 0.35) {
-                    const fp = Math.min(1, (p - 0.35) / 0.3);
+                // Scale factor for positions: dist 5 = full barHalf
+                const scale = barHalf / 5;
 
-                    // Light person: small rectangle (far from center, right side)
-                    ctx.globalAlpha = fp;
-                    Draw.roundRect(ctx, lightX - 12 * s, pivotY - 40 * s, 24 * s, 40 * s, 4 * s, '#5a8fa8');
-                    Draw.circle(ctx, lightX, pivotY - 50 * s, 10 * s, '#5a8fa8', null);
-                    Draw.label(ctx, '40 kg', lightX, pivotY - 28 * s, '#fff', 8 * s);
+                // ---- Left figure (peso1 at dist1) ----
+                const lx = -dist1 * scale;
+                // Size proportional to weight: radius 10..22 for 20..100 N
+                const lr = (10 + (peso1 - 20) / 80 * 12) * s;
+                const lBodyH = lr * 2.8;
 
-                    // Weight arrow for light
-                    Draw.animatedArrow(ctx, lightX, pivotY + 6 * s, lightX, pivotY + 30 * s, '#5a8fa8', fp, 2 * s, 8 * s);
-                    ctx.globalAlpha = 1;
-                }
+                ctx.globalAlpha = p;
+                // Body (rounded rect)
+                Draw.roundRect(ctx, lx - lr, -lBodyH - 4 * s, lr * 2, lBodyH, 4 * s, '#c46b60');
+                // Head
+                Draw.circle(ctx, lx, -lBodyH - 4 * s - lr * 0.7, lr * 0.7, '#c46b60', null);
+                // Weight label
+                Draw.label(ctx, peso1 + ' N', lx, -lBodyH * 0.45, '#fff', Math.max(8, 9 * s), false);
 
-                // Arm labels
-                if (p > 0.55) {
-                    const ap = Math.min(1, (p - 0.55) / 0.25);
-                    ctx.globalAlpha = ap;
+                // Weight arrow
+                Draw.arrow(ctx, lx, 6 * s, lx, 6 * s + 24 * s, '#c46b60', 2 * s, 7 * s);
 
-                    // b1 (short arm, heavy side)
-                    Draw.arrow(ctx, pivotX - 4 * s, pivotY + 18 * s, heavyX + 4 * s, pivotY + 18 * s, '#9b6fb5', 1.5 * s, 6 * s);
-                    Draw.arrow(ctx, heavyX + 4 * s, pivotY + 18 * s, pivotX - 4 * s, pivotY + 18 * s, '#9b6fb5', 1.5 * s, 6 * s);
-                    Draw.label(ctx, 'b\u2081', (pivotX + heavyX) / 2, pivotY + 30 * s, '#9b6fb5', 11 * s);
+                // ---- Right figure (peso2 at dist2) ----
+                const rx = dist2 * scale;
+                const rr = (10 + (peso2 - 20) / 80 * 12) * s;
+                const rBodyH = rr * 2.8;
 
-                    // b2 (long arm, light side)
-                    Draw.arrow(ctx, pivotX + 4 * s, pivotY + 18 * s, lightX - 4 * s, pivotY + 18 * s, '#9b6fb5', 1.5 * s, 6 * s);
-                    Draw.arrow(ctx, lightX - 4 * s, pivotY + 18 * s, pivotX + 4 * s, pivotY + 18 * s, '#9b6fb5', 1.5 * s, 6 * s);
-                    Draw.label(ctx, 'b\u2082', (pivotX + lightX) / 2, pivotY + 30 * s, '#9b6fb5', 11 * s);
-                    ctx.globalAlpha = 1;
-                }
+                // Body
+                Draw.roundRect(ctx, rx - rr, -rBodyH - 4 * s, rr * 2, rBodyH, 4 * s, '#5a8fa8');
+                // Head
+                Draw.circle(ctx, rx, -rBodyH - 4 * s - rr * 0.7, rr * 0.7, '#5a8fa8', null);
+                // Weight label
+                Draw.label(ctx, peso2 + ' N', rx, -rBodyH * 0.45, '#fff', Math.max(8, 9 * s), false);
 
-                // Equilibrium box
-                if (p > 0.75) {
-                    const ep = (p - 0.75) / 0.25;
-                    ctx.globalAlpha = ep;
-                    const bx = w * 0.5;
-                    const by = 30 * s;
-                    Draw.roundRect(ctx, bx - 100 * s, by - 14 * s, 200 * s, 32 * s, 6 * s, '#e4f2e7');
-                    ctx.strokeStyle = '#81c784';
-                    ctx.lineWidth = 1.5 * s;
-                    ctx.strokeRect(bx - 100 * s, by - 14 * s, 200 * s, 32 * s);
-                    Draw.label(ctx, 'M\u2081 = M\u2082  \u2192  equilibrio!', bx, by + 2 * s, '#3d8b44', 12 * s);
-                    ctx.globalAlpha = 1;
-                }
+                // Weight arrow
+                Draw.arrow(ctx, rx, 6 * s, rx, 6 * s + 24 * s, '#5a8fa8', 2 * s, 7 * s);
+
+                // ---- Arm labels on beam ----
+                // b1 (left arm)
+                const armY = 16 * s;
+                Draw.arrow(ctx, -4 * s, armY, lx + 4 * s, armY, '#9b6fb5', 1.5 * s, 5 * s);
+                Draw.arrow(ctx, lx + 4 * s, armY, -4 * s, armY, '#9b6fb5', 1.5 * s, 5 * s);
+                Draw.label(ctx, 'b\u2081 = ' + dist1 + ' m', lx / 2, armY + 14 * s, '#9b6fb5', 9 * s, false);
+
+                // b2 (right arm)
+                Draw.arrow(ctx, 4 * s, armY, rx - 4 * s, armY, '#9b6fb5', 1.5 * s, 5 * s);
+                Draw.arrow(ctx, rx - 4 * s, armY, 4 * s, armY, '#9b6fb5', 1.5 * s, 5 * s);
+                Draw.label(ctx, 'b\u2082 = ' + dist2 + ' m', rx / 2, armY + 14 * s, '#9b6fb5', 9 * s, false);
+
+                ctx.globalAlpha = 1;
+                ctx.restore();
+                // ---- End of tilted drawing ----
 
                 // Pivot dot on top
                 Draw.circle(ctx, pivotX, pivotY, 5 * s, '#d4956a', '#b5a898', 2 * s);
+
+                // ---- Moment values below the seesaw ----
+                const infoY = pivotY + triH + 20 * s;
+                const m1Color = M1 > M2 ? '#c46b60' : (M1 < M2 ? '#888' : '#3d8b44');
+                const m2Color = M2 > M1 ? '#5a8fa8' : (M2 < M1 ? '#888' : '#3d8b44');
+
+                ctx.globalAlpha = p;
+                Draw.label(ctx, 'M\u2081 = ' + peso1 + ' \u00d7 ' + dist1 + ' = ' + M1.toFixed(0) + ' N\u00b7m',
+                    w * 0.25, infoY, m1Color, 10 * s, false);
+                Draw.label(ctx, 'M\u2082 = ' + peso2 + ' \u00d7 ' + dist2 + ' = ' + M2.toFixed(0) + ' N\u00b7m',
+                    w * 0.75, infoY, m2Color, 10 * s, false);
+
+                // ---- Equilibrium banner ----
+                if (isBalanced) {
+                    const bannerW = 160 * s;
+                    const bannerH = 34 * s;
+                    const bx = pivotX - bannerW / 2;
+                    const by = 12 * s;
+                    Draw.roundRect(ctx, bx, by, bannerW, bannerH, 8 * s, '#e4f2e7');
+                    ctx.strokeStyle = '#81c784';
+                    ctx.lineWidth = 2 * s;
+                    ctx.strokeRect(bx, by, bannerW, bannerH);
+                    Draw.label(ctx, '\u2705 Equilibrio!', pivotX, by + bannerH / 2, '#3d8b44', 14 * s);
+                }
+
+                ctx.globalAlpha = 1;
             }
         },
 
@@ -424,7 +482,7 @@ const Tema3 = (() => {
             title: 'Il trucco del perno',
             text: 'Nei problemi con molte forze, scegliere il <span class="term" data-term="perno">perno</span> nel punto giusto semplifica tutto. Il trucco: se metti il perno dove agisce una forza <b>sconosciuta</b>, quella forza ha braccio zero e il suo momento sparisce dall\'equazione!<br><br>' +
                 '<b>Esempio:</b> hai una trave con una forza incognita al punto A. Se calcoli i momenti rispetto ad A, la forza in A non compare (braccio = 0). Rimangono solo le forze note!<br><br>' +
-                'Questo e uno dei trucchi piu potenti della statica: scegli bene il perno e le equazioni si risolvono quasi da sole.',
+                'Questo è uno dei trucchi più potenti della statica: scegli bene il perno e le equazioni si risolvono quasi da sole.',
             formula: 'M_A = F_{\\text{incognita}} \\times 0 = 0 \\quad \\text{(sparisce!)}',
             cleanDraw: true,
             duration: 1200,
@@ -530,5 +588,21 @@ const Tema3 = (() => {
         }
     ];
 
-    return { steps };
+    const quiz = [
+        {
+            question: 'Se applichi una forza esattamente sul perno, qual \u00e8 il momento?',
+            options: ['Massimo', 'Dipende dalla forza', 'Zero', 'Infinito'],
+            correct: 2,
+            explanation: 'Se la forza \u00e8 applicata sul perno, il braccio b = 0, quindi M = F \u00d7 0 = 0. Nessuna rotazione!'
+        },
+        {
+            question: 'Per svitare un bullone con meno fatica, usi una chiave pi\u00f9...',
+            options: ['Corta', 'Lunga', 'Pesante', 'Leggera'],
+            correct: 1,
+            explanation: 'Una chiave pi\u00f9 lunga aumenta il braccio b. Dato che M = F \u00d7 b, con un braccio maggiore ti serve meno forza per ottenere lo stesso momento!'
+        }
+    ];
+
+    return { id: 'momenti', title: 'I momenti delle forze', icon: '\u{1F527}', category: 'Meccanica', order: 7, steps, quiz };
 })();
+if (typeof TopicRegistry !== 'undefined') TopicRegistry.register(Tema3);

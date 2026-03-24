@@ -1,0 +1,20 @@
+{
+  "name": "fisica",
+  "version": "1.0.0",
+  "description": "App web interattiva per spiegare la fisica passo per passo a studenti di prima superiore, con animazioni, formule renderizzate e un linguaggio semplice.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github-xpylon:lbazzani/prof-bazzani-fisica.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "puppeteer": "^24.40.0"
+  }
+}

@@ -6,7 +6,7 @@ const Tema5 = (() => {
         {
             title: 'Numeri enormi e minuscoli',
             text: 'In fisica abbiamo a che fare con numeri <b>enormi</b> (massa della Terra, distanza dal Sole) e numeri <b>minuscoli</b> (massa di un elettrone, tempo di contatto in un urto tra palle da biliardo).<br><br>' +
-                'Scrivere tutti quegli zeri e <b>scomodo</b> e si rischia di sbagliare: basta dimenticarne uno per ottenere un risultato sbagliato!<br><br>' +
+                'Scrivere tutti quegli zeri è <b>scomodo</b> e si rischia di sbagliare: basta dimenticarne uno per ottenere un risultato sbagliato!<br><br>' +
                 'Per questo si usa la <span class="term" data-term="notazione-scientifica">notazione scientifica</span>: un modo <span class="highlight">compatto e preciso</span> per scrivere qualsiasi numero, grande o piccolo che sia.',
             formula: null,
             cleanDraw: true,
@@ -87,7 +87,7 @@ const Tema5 = (() => {
         {
             title: 'Come funziona: a \u00d7 10\u207f',
             text: 'Un numero in <span class="term" data-term="notazione-scientifica">notazione scientifica</span> ha due parti:<br><br>' +
-                '<b>1)</b> Un <span class="highlight">coefficiente a</span>, cioe un numero compreso tra 1 e 10.<br>' +
+                '<b>1)</b> Un <span class="highlight">coefficiente a</span>, cioè un numero compreso tra 1 e 10.<br>' +
                 '<b>2)</b> Una <span class="highlight">potenza di 10</span>, che dice quante posizioni spostare la virgola.<br><br>' +
                 'Esponente <b>positivo</b> = numero grande. Esponente <b>negativo</b> = numero piccolo.<br><br>' +
                 'Esempi: <span class="highlight">3,5 &times; 10&sup2; = 350</span> e <span class="highlight">7,2 &times; 10&minus;&sup3; = 0,0072</span>.',
@@ -181,7 +181,7 @@ const Tema5 = (() => {
         {
             title: 'Trasformare un numero',
             text: 'Per convertire un numero in <span class="term" data-term="notazione-scientifica">notazione scientifica</span>:<br><br>' +
-                '<b>1)</b> Sposta la virgola finche non ottieni un numero tra 1 e 10.<br>' +
+                '<b>1)</b> Sposta la virgola finché non ottieni un numero tra 1 e 10.<br>' +
                 '<b>2)</b> Conta di quante posizioni l\'hai spostata.<br>' +
                 '<b>3)</b> Spostamento a <b>sinistra</b> = esponente positivo. A <b>destra</b> = esponente negativo.<br><br>' +
                 'Esempio: <span class="highlight">20 580 &rarr; 2,058 &times; 10&sup4;</span> (virgola spostata 4 posti a sinistra).',
@@ -302,98 +302,213 @@ const Tema5 = (() => {
             text: '<b>Moltiplicazione:</b> moltiplichi i coefficienti e <span class="highlight">sommi gli esponenti</span>.<br>' +
                 '<b>Divisione:</b> dividi i coefficienti e <span class="highlight">sottrai gli esponenti</span>.<br><br>' +
                 'Esempio dai nostri problemi: <span class="highlight">m &times; g = 2,1 &times; 10&sup3; &times; 9,8 = 20 580 N = 2,058 &times; 10&sup4; N</span>.<br><br>' +
-                'Con la <span class="term" data-term="notazione-scientifica">notazione scientifica</span> i conti diventano piu semplici, soprattutto quando i numeri hanno tante cifre!',
+                'Con la <span class="term" data-term="notazione-scientifica">notazione scientifica</span> i conti diventano più semplici, soprattutto quando i numeri hanno tante cifre!',
             formula: '(a \\times 10^m) \\times (b \\times 10^n) = (a \\times b) \\times 10^{m+n}',
             cleanDraw: true,
-            duration: 1400,
+            duration: 2200,
             draw(ctx, w, h, p) {
                 const s = Draw.S(w, h);
                 ctx.fillStyle = '#faf8f5';
                 ctx.fillRect(0, 0, w, h);
 
                 const cx = w / 2;
+                const ease = t => t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
 
-                // Two numbers coming together
-                if (p > 0.05) {
-                    const fp = Math.min(1, (p - 0.05) / 0.3);
-                    ctx.globalAlpha = fp;
+                // Phase 1 (p 0.00-0.22): Two number boxes slide in from sides and collide
+                const p1 = Math.min(1, p / 0.22);
+                const ep1 = ease(p1);
+                const y1 = h * 0.15;
 
-                    const y1 = h * 0.2;
-                    const leftX = cx - 70 * s - (1 - fp) * 40 * s;
-                    const rightX = cx + 70 * s + (1 - fp) * 40 * s;
+                const leftRest = cx - 80 * s;
+                const rightRest = cx + 80 * s;
+                const leftX = leftRest - (1 - ep1) * w * 0.35;
+                const rightX = rightRest + (1 - ep1) * w * 0.35;
 
-                    // First number box
-                    Draw.roundRect(ctx, leftX - 55 * s, y1 - 18 * s, 110 * s, 36 * s, 5 * s, 'rgba(196,107,96,0.15)');
-                    ctx.strokeStyle = '#c46b60';
-                    ctx.lineWidth = 1.5 * s;
-                    ctx.strokeRect(leftX - 55 * s, y1 - 18 * s, 110 * s, 36 * s);
-                    Draw.label(ctx, '2,1 \u00d7 10\u00b3', leftX, y1, '#c46b60', 13 * s);
+                ctx.globalAlpha = Math.min(1, p1 * 3);
+                Draw.roundRect(ctx, leftX - 60 * s, y1 - 18 * s, 120 * s, 36 * s, 5 * s, 'rgba(196,107,96,0.15)');
+                ctx.strokeStyle = '#c46b60'; ctx.lineWidth = 1.5 * s;
+                ctx.strokeRect(leftX - 60 * s, y1 - 18 * s, 120 * s, 36 * s);
+                Draw.label(ctx, '2,1 \u00d7 10\u00b3', leftX, y1, '#c46b60', 13 * s);
 
-                    // Multiplication sign
-                    Draw.label(ctx, '\u00d7', cx, y1, '#2e2e2e', 16 * s);
+                ctx.globalAlpha = Math.min(1, p1 * 3) * Math.min(1, ep1 * 2);
+                Draw.label(ctx, '\u00d7', cx, y1, '#2e2e2e', 16 * s);
 
-                    // Second number box
-                    Draw.roundRect(ctx, rightX - 45 * s, y1 - 18 * s, 90 * s, 36 * s, 5 * s, 'rgba(90,143,168,0.15)');
-                    ctx.strokeStyle = '#5a8fa8';
-                    ctx.lineWidth = 1.5 * s;
-                    ctx.strokeRect(rightX - 45 * s, y1 - 18 * s, 90 * s, 36 * s);
-                    Draw.label(ctx, '9,8', rightX, y1, '#5a8fa8', 13 * s);
+                ctx.globalAlpha = Math.min(1, p1 * 3);
+                Draw.roundRect(ctx, rightX - 40 * s, y1 - 18 * s, 80 * s, 36 * s, 5 * s, 'rgba(90,143,168,0.15)');
+                ctx.strokeStyle = '#5a8fa8'; ctx.lineWidth = 1.5 * s;
+                ctx.strokeRect(rightX - 40 * s, y1 - 18 * s, 80 * s, 36 * s);
+                Draw.label(ctx, '9,8', rightX, y1, '#5a8fa8', 13 * s);
 
-                    ctx.globalAlpha = 1;
+                if (p1 > 0.85 && p1 < 1) {
+                    const flash = 1 - (p1 - 0.85) / 0.15;
+                    ctx.globalAlpha = flash * 0.5;
+                    Draw.circle(ctx, cx, y1, 20 * s * flash, null, '#d4956a', 2 * s);
                 }
+                ctx.globalAlpha = 1;
 
-                // Show the process: coefficients multiply, exponents add
-                if (p > 0.35) {
-                    const fp = Math.min(1, (p - 0.35) / 0.3);
-                    ctx.globalAlpha = fp;
+                // Phase 2 (p 0.20-0.48): Coefficients fly together, exponents stack and add
+                if (p > 0.20) {
+                    const p2 = Math.min(1, (p - 0.20) / 0.28);
+                    const ep2 = ease(p2);
+                    const procY = h * 0.36;
 
-                    const procY = h * 0.45;
+                    ctx.globalAlpha = Math.min(1, p2 * 2.5);
+                    Draw.label(ctx, 'Coefficienti:', w * 0.12, procY, '#2e2e2e', 10 * s, false);
 
-                    // Coefficients
-                    Draw.label(ctx, 'Coefficienti:', w * 0.15, procY - 14 * s, '#2e2e2e', 10 * s, false);
-                    Draw.label(ctx, '2,1 \u00d7 9,8 = 20,58', w * 0.5, procY - 14 * s, '#c46b60', 12 * s);
-
-                    // Exponents
-                    Draw.label(ctx, 'Esponenti:', w * 0.15, procY + 14 * s, '#2e2e2e', 10 * s, false);
-                    Draw.label(ctx, '3 + 0 = 3', w * 0.5, procY + 14 * s, '#5a8fa8', 12 * s);
-
-                    // Arrow down
-                    if (fp > 0.6) {
-                        Draw.animatedArrow(ctx, cx, procY + 30 * s, cx, procY + 50 * s, '#5a9a6a', fp, 2 * s, 8 * s);
+                    const coefCx = w * 0.52;
+                    if (p2 < 0.6) {
+                        const mt = ease(p2 / 0.6);
+                        const lc = coefCx - 55 * s * (1 - mt) - 22 * s;
+                        const rc = coefCx + 55 * s * (1 - mt) + 22 * s;
+                        Draw.label(ctx, '2,1', lc, procY, '#c46b60', 12 * s);
+                        Draw.label(ctx, '\u00d7', coefCx, procY, '#2e2e2e', 11 * s);
+                        Draw.label(ctx, '9,8', rc, procY, '#5a8fa8', 12 * s);
+                    } else {
+                        const pop = p2 < 0.7 ? 1 + 0.2 * (1 - (p2 - 0.6) / 0.1) : 1;
+                        Draw.pill(ctx, coefCx - 55 * s, procY - 14 * s, 110 * s, 28 * s, 'rgba(196,107,96,0.1)', '#c46b60', 1.5 * s);
+                        Draw.label(ctx, '2,1 \u00d7 9,8 = 20,58', coefCx, procY, '#c46b60', 12 * s * pop);
                     }
 
+                    const expY = procY + 36 * s;
+                    const expDelay = 0.25;
+                    if (p2 > expDelay) {
+                        const ep2b = Math.min(1, (p2 - expDelay) / (1 - expDelay));
+                        ctx.globalAlpha = Math.min(1, ep2b * 2.5);
+                        Draw.label(ctx, 'Esponenti:', w * 0.12, expY, '#2e2e2e', 10 * s, false);
+
+                        const stackCx = w * 0.48;
+                        if (ep2b < 0.5) {
+                            const st = ease(ep2b / 0.5);
+                            const gap = 50 * s * (1 - st);
+                            Draw.roundRect(ctx, stackCx - 18 * s - gap, expY - 13 * s, 36 * s, 26 * s, 4 * s, 'rgba(90,143,168,0.15)');
+                            ctx.strokeStyle = '#5a8fa8'; ctx.lineWidth = 1 * s;
+                            ctx.strokeRect(stackCx - 18 * s - gap, expY - 13 * s, 36 * s, 26 * s);
+                            Draw.label(ctx, '3', stackCx - gap, expY, '#5a8fa8', 13 * s);
+
+                            Draw.label(ctx, '+', stackCx + 26 * s, expY, '#2e2e2e', 11 * s);
+
+                            Draw.roundRect(ctx, stackCx + 38 * s + gap, expY - 13 * s, 36 * s, 26 * s, 4 * s, 'rgba(90,143,168,0.15)');
+                            ctx.strokeStyle = '#5a8fa8'; ctx.lineWidth = 1 * s;
+                            ctx.strokeRect(stackCx + 38 * s + gap, expY - 13 * s, 36 * s, 26 * s);
+                            Draw.label(ctx, '0', stackCx + 56 * s + gap, expY, '#5a8fa8', 13 * s);
+                        } else {
+                            const pop = ep2b < 0.6 ? 1 + 0.15 * (1 - (ep2b - 0.5) / 0.1) : 1;
+                            Draw.pill(ctx, stackCx - 45 * s, expY - 14 * s, 130 * s, 28 * s, 'rgba(90,143,168,0.1)', '#5a8fa8', 1.5 * s);
+                            Draw.label(ctx, '3 + 0 = 3', stackCx + 20 * s, expY, '#5a8fa8', 12 * s * pop);
+                        }
+                    }
                     ctx.globalAlpha = 1;
                 }
 
-                // Intermediate result
-                if (p > 0.55) {
-                    const fp = Math.min(1, (p - 0.55) / 0.2);
-                    ctx.globalAlpha = fp;
+                // Phase 3 (p 0.46-0.65): Arrow down + intermediate result with warning
+                if (p > 0.46) {
+                    const p3 = Math.min(1, (p - 0.46) / 0.19);
+                    const ep3 = ease(p3);
 
-                    const midY = h * 0.63;
-                    Draw.label(ctx, '= 20,58 \u00d7 10\u00b3 N', cx, midY, '#d4956a', 13 * s);
+                    const arrowStartY = h * 0.36 + 50 * s;
+                    const arrowEndY = arrowStartY + 25 * s;
+                    Draw.animatedArrow(ctx, cx, arrowStartY, cx, arrowEndY, '#d4956a', ep3, 2 * s, 8 * s);
 
-                    // Note: adjust to proper notation
-                    if (fp > 0.5) {
-                        Draw.label(ctx, 'Ma 20,58 > 10! Aggiustiamo...', cx, midY + 20 * s, '#d4956a', 9 * s, false);
+                    const midY = arrowEndY + 18 * s;
+                    ctx.globalAlpha = ep3;
+                    const slideOffset = (1 - ep3) * 15 * s;
+                    Draw.label(ctx, '= 20,58 \u00d7 10\u00b3 N', cx, midY + slideOffset, '#d4956a', 13 * s);
+
+                    if (p3 > 0.5) {
+                        const wp = (p3 - 0.5) / 0.5;
+                        ctx.globalAlpha = wp;
+                        const shake = wp < 0.5 ? Math.sin(wp * 20) * 3 * s : 0;
+                        Draw.label(ctx, '\u26a0 Ma 20,58 > 10! Aggiustiamo...', cx + shake, midY + 22 * s + slideOffset, '#d4956a', 10 * s, false);
+                    }
+                    ctx.globalAlpha = 1;
+                }
+
+                // Phase 4 (p 0.65-0.85): Decimal point slides left, exponent increments
+                if (p > 0.65) {
+                    const p4 = Math.min(1, (p - 0.65) / 0.20);
+                    const ep4 = ease(p4);
+                    const corrY = h * 0.74;
+
+                    ctx.globalAlpha = 1;
+                    Draw.roundRect(ctx, cx - 130 * s, corrY - 20 * s, 260 * s, 40 * s, 5 * s, 'rgba(212,149,106,0.08)');
+
+                    // Digits of 20,58 with animated comma sliding left
+                    const digitSpacing = 16 * s;
+                    const digitsStartX = cx - 60 * s;
+
+                    // Draw digits: 2, 0, 5, 8 (comma drawn separately)
+                    const digitChars = ['2', '0', '5', '8'];
+                    for (let i = 0; i < digitChars.length; i++) {
+                        let dx = digitsStartX + i * digitSpacing;
+                        // After position 1, shift right to leave room for the stationary comma gap
+                        if (i >= 2) dx += digitSpacing;
+                        // As comma moves, close the old gap and open a new one
+                        if (i >= 2) dx -= ep4 * digitSpacing * 0.3;
+                        Draw.label(ctx, digitChars[i], dx, corrY, '#d4956a', 14 * s);
                     }
 
-                    ctx.globalAlpha = 1;
+                    // Comma slides from after '0' to after '2'
+                    const commaFrom = digitsStartX + 2 * digitSpacing;
+                    const commaTo = digitsStartX + 1 * digitSpacing;
+                    const commaX = commaFrom - ep4 * (commaFrom - commaTo);
+                    const commaTrailY = corrY + 6 * s;
+
+                    if (ep4 > 0 && ep4 < 1) {
+                        ctx.strokeStyle = 'rgba(196,107,96,0.3)';
+                        ctx.lineWidth = 2 * s;
+                        ctx.setLineDash([3, 3]);
+                        ctx.beginPath();
+                        ctx.moveTo(commaFrom, commaTrailY);
+                        ctx.lineTo(commaX, commaTrailY);
+                        ctx.stroke();
+                        ctx.setLineDash([]);
+                    }
+                    Draw.label(ctx, ',', commaX, corrY, '#c46b60', 16 * s);
+
+                    // Exponent: 10^3 -> 10^4
+                    const expX = cx + 40 * s;
+                    Draw.label(ctx, '\u00d7 10', expX, corrY, '#5a8fa8', 14 * s);
+                    const expNumX = expX + 24 * s;
+                    const expNumY = corrY - 8 * s;
+
+                    if (ep4 < 0.5) {
+                        ctx.globalAlpha = 1 - ep4 * 2;
+                        Draw.label(ctx, '\u00b3', expNumX, expNumY, '#5a8fa8', 11 * s);
+                        ctx.globalAlpha = 1;
+                    } else {
+                        ctx.globalAlpha = (ep4 - 0.5) * 2;
+                        const pop = ep4 < 0.65 ? 1.3 : 1;
+                        Draw.label(ctx, '\u2074', expNumX, expNumY, '#3d8b44', 11 * s * pop);
+                        ctx.globalAlpha = 1;
+                    }
+
+                    // Floating +1 indicator
+                    if (ep4 > 0.3 && ep4 < 0.9) {
+                        const floatP = (ep4 - 0.3) / 0.6;
+                        ctx.globalAlpha = floatP < 0.5 ? floatP * 2 : 2 * (1 - floatP);
+                        Draw.label(ctx, '+1', expNumX + 14 * s, expNumY - floatP * 18 * s, '#3d8b44', 9 * s, false);
+                        ctx.globalAlpha = 1;
+                    }
                 }
 
-                // Final result in green box
-                if (p > 0.75) {
-                    const rp = Math.min(1, (p - 0.75) / 0.2);
-                    ctx.globalAlpha = rp;
+                // Phase 5 (p 0.85-1.0): Final result pops in with scale bounce
+                if (p > 0.85) {
+                    const p5 = Math.min(1, (p - 0.85) / 0.15);
+                    const ep5 = ease(p5);
+                    const ry = h * 0.9;
+                    const scale = ep5 < 0.5 ? 0.8 + 0.3 * ease(ep5 / 0.5) : 1.0 + 0.05 * (1 - ease((ep5 - 0.5) / 0.5));
 
-                    const ry = h * 0.83;
-                    Draw.roundRect(ctx, cx - 110 * s, ry - 22 * s, 220 * s, 44 * s, 6 * s, '#e4f2e7');
-                    ctx.strokeStyle = '#81c784';
-                    ctx.lineWidth = 1.5 * s;
-                    ctx.strokeRect(cx - 110 * s, ry - 22 * s, 220 * s, 44 * s);
+                    ctx.globalAlpha = ep5;
+                    ctx.save();
+                    ctx.translate(cx, ry);
+                    ctx.scale(scale, scale);
 
-                    Draw.label(ctx, '= 2,058 \u00d7 10\u2074 N', cx, ry, '#3d8b44', 14 * s);
+                    Draw.roundRect(ctx, -110 * s, -22 * s, 220 * s, 44 * s, 6 * s, '#e4f2e7');
+                    ctx.strokeStyle = '#81c784'; ctx.lineWidth = 1.5 * s;
+                    ctx.strokeRect(-110 * s, -22 * s, 220 * s, 44 * s);
+                    Draw.label(ctx, '= 2,058 \u00d7 10\u2074 N', 0, 0, '#3d8b44', 14 * s);
 
+                    ctx.restore();
                     ctx.globalAlpha = 1;
                 }
             }
@@ -403,68 +518,155 @@ const Tema5 = (() => {
         {
             title: 'Nei nostri problemi',
             text: 'Nel primo problema abbiamo un\'auto da <span class="highlight">2100 kg = 2,1 &times; 10&sup3; kg</span>.<br><br>' +
-                'Il peso e: <span class="highlight">P = mg = 2,1 &times; 10&sup3; &times; 9,8 = 2,058 &times; 10&sup4; N</span>.<br>' +
-                'La tensione della fune e: <span class="highlight">T = 1,029 &times; 10&sup4; N</span>.<br><br>' +
-                'Nota: l\'esponente ti dice subito l\'<b>ordine di grandezza</b>! Sia P che T sono dell\'ordine di 10&sup4;, cioe decine di migliaia di newton. Questo controllo e utilissimo per capire se il risultato ha senso.',
+                'Il peso è: <span class="highlight">P = mg = 2,1 &times; 10&sup3; &times; 9,8 = 2,058 &times; 10&sup4; N</span>.<br>' +
+                'La tensione della fune è: <span class="highlight">T = 1,029 &times; 10&sup4; N</span>.<br><br>' +
+                'Nota: l\'esponente ti dice subito l\'<b>ordine di grandezza</b>! Sia P che T sono dell\'ordine di 10&sup4;, cioè decine di migliaia di newton. Questo controllo è utilissimo per capire se il risultato ha senso.',
             formula: 'P = 2{,}058 \\times 10^4 \\text{ N} \\qquad T = 1{,}029 \\times 10^4 \\text{ N}',
             cleanDraw: true,
-            duration: 1200,
+            duration: 1800,
             draw(ctx, w, h, p) {
                 const s = Draw.S(w, h);
                 ctx.fillStyle = '#faf8f5';
                 ctx.fillRect(0, 0, w, h);
 
                 const cx = w / 2;
+                const ease = t => t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
 
-                // Three values stacked vertically
                 const values = [
-                    { label: 'Massa:', original: '2 100 kg', scientific: '2,1 \u00d7 10\u00b3 kg', color: '#c46b60' },
-                    { label: 'Peso:', original: '20 580 N', scientific: '2,058 \u00d7 10\u2074 N', color: '#5a8fa8' },
-                    { label: 'Tensione:', original: '10 290 N', scientific: '1,029 \u00d7 10\u2074 N', color: '#5a9a6a' }
+                    { label: 'Massa:', original: '2 100 kg', scientific: '2,1 \u00d7 10\u00b3 kg', color: '#c46b60', exp: 3 },
+                    { label: 'Peso:', original: '20 580 N', scientific: '2,058 \u00d7 10\u2074 N', color: '#5a8fa8', exp: 4 },
+                    { label: 'Tensione:', original: '10 290 N', scientific: '1,029 \u00d7 10\u2074 N', color: '#5a9a6a', exp: 4 }
                 ];
 
-                const startY = h * 0.18;
-                const rowH = h * 0.2;
+                const startY = h * 0.13;
+                const rowH = h * 0.17;
 
                 for (let i = 0; i < values.length; i++) {
-                    const delay = 0.05 + i * 0.2;
-                    if (p > delay) {
-                        const fp = Math.min(1, (p - delay) / 0.25);
-                        ctx.globalAlpha = fp;
+                    const delay = 0.02 + i * 0.18;
+                    if (p <= delay) continue;
 
-                        const y = startY + i * rowH;
-                        const v = values[i];
+                    const rowP = Math.min(1, (p - delay) / 0.22);
+                    const v = values[i];
+                    const y = startY + i * rowH;
 
-                        // Label
-                        Draw.label(ctx, v.label, w * 0.12, y, '#2e2e2e', 11 * s, false);
+                    // Sub-phases within each row
+                    const fadeIn = Math.min(1, rowP * 4);       // 0-0.25: label + original appear
+                    const morphP = Math.max(0, Math.min(1, (rowP - 0.25) / 0.45)); // 0.25-0.70: morph
+                    const settleP = Math.max(0, Math.min(1, (rowP - 0.70) / 0.30)); // 0.70-1.0: settle
 
-                        // Original value
-                        Draw.label(ctx, v.original, w * 0.35, y, v.color, 12 * s);
+                    ctx.globalAlpha = fadeIn;
 
-                        // Arrow
-                        Draw.animatedArrow(ctx, w * 0.5, y, w * 0.58, y, '#d4956a', fp, 2 * s, 7 * s);
+                    // Label always visible once faded in
+                    Draw.label(ctx, v.label, w * 0.10, y, '#2e2e2e', 11 * s, false);
 
-                        // Scientific notation value
-                        Draw.roundRect(ctx, w * 0.6, y - 15 * s, w * 0.35, 30 * s, 5 * s, 'rgba(228,242,231,0.5)');
-                        Draw.label(ctx, v.scientific, w * 0.78, y, v.color, 12 * s);
+                    if (morphP <= 0) {
+                        // Just show original number, sliding in from left
+                        const slideX = w * 0.35 - (1 - fadeIn) * 30 * s;
+                        Draw.label(ctx, v.original, slideX, y, v.color, 12 * s);
+                    } else if (morphP < 1) {
+                        // Morphing: original fades out while sliding right, scientific fades in
+                        const em = ease(morphP);
 
-                        ctx.globalAlpha = 1;
+                        // Original slides right and fades
+                        ctx.globalAlpha = fadeIn * (1 - em);
+                        const origX = w * 0.35 + em * 60 * s;
+                        Draw.label(ctx, v.original, origX, y, v.color, 12 * s);
+
+                        // Animated arrow grows
+                        ctx.globalAlpha = fadeIn * em;
+                        Draw.animatedArrow(ctx, w * 0.48, y, w * 0.56, y, '#d4956a', em, 2 * s, 7 * s);
+
+                        // Scientific notation slides in from right
+                        const sciX = w * 0.78 + (1 - em) * 40 * s;
+                        Draw.roundRect(ctx, sciX - w * 0.17, y - 15 * s, w * 0.34, 30 * s, 5 * s, `rgba(228,242,231,${0.5 * em})`);
+                        Draw.label(ctx, v.scientific, sciX, y, v.color, 12 * s);
+                    } else {
+                        // Settled: show arrow + scientific with subtle pop
+                        ctx.globalAlpha = fadeIn;
+                        Draw.animatedArrow(ctx, w * 0.48, y, w * 0.56, y, '#d4956a', 1, 2 * s, 7 * s);
+
+                        const pop = settleP < 0.3 ? 1 + 0.12 * (1 - settleP / 0.3) : 1;
+                        Draw.roundRect(ctx, w * 0.61, y - 15 * s, w * 0.34, 30 * s, 5 * s, 'rgba(228,242,231,0.5)');
+                        Draw.label(ctx, v.scientific, w * 0.78, y, v.color, 12 * s * pop);
+
+                        // Keep original visible but faint
+                        ctx.globalAlpha = fadeIn * 0.35;
+                        Draw.label(ctx, v.original, w * 0.30, y, v.color, 10 * s, false);
                     }
+                    ctx.globalAlpha = 1;
                 }
 
-                // Order of magnitude box
-                if (p > 0.7) {
-                    const rp = Math.min(1, (p - 0.7) / 0.25);
-                    ctx.globalAlpha = rp;
+                // Order of magnitude ruler (p 0.58-1.0)
+                if (p > 0.58) {
+                    const rp = Math.min(1, (p - 0.58) / 0.30);
+                    const erp = ease(rp);
+                    ctx.globalAlpha = erp;
 
-                    const boxY = h * 0.8;
-                    Draw.roundRect(ctx, cx - 120 * s, boxY - 24 * s, 240 * s, 50 * s, 6 * s, '#e4f2e7');
-                    ctx.strokeStyle = '#81c784';
-                    ctx.lineWidth = 1.5 * s;
-                    ctx.strokeRect(cx - 120 * s, boxY - 24 * s, 240 * s, 50 * s);
+                    const rulerY = h * 0.72;
+                    const rulerLeft = w * 0.08;
+                    const rulerRight = w * 0.92;
+                    const rulerW = rulerRight - rulerLeft;
 
-                    Draw.label(ctx, 'Ordine di grandezza: 10\u2074', cx, boxY - 5 * s, '#3d8b44', 13 * s);
-                    Draw.label(ctx, 'Decine di migliaia di N', cx, boxY + 14 * s, '#3d8b44', 10 * s, false);
+                    // Title
+                    Draw.label(ctx, 'Ordine di grandezza', cx, rulerY - 18 * s, '#3d8b44', 10 * s, false);
+
+                    // Horizontal ruler line, draws left to right
+                    const lineEndX = rulerLeft + rulerW * erp;
+                    Draw.line(ctx, rulerLeft, rulerY, lineEndX, rulerY, '#b0a594', 2 * s);
+
+                    // Tick marks and labels for 10^0 through 10^5
+                    const exponents = [0, 1, 2, 3, 4, 5];
+                    for (let j = 0; j < exponents.length; j++) {
+                        const ex = exponents[j];
+                        const tickX = rulerLeft + (j / (exponents.length - 1)) * rulerW;
+                        if (tickX > lineEndX) continue;
+
+                        const tickDelay = j / (exponents.length - 1);
+                        const tickAlpha = Math.min(1, (erp - tickDelay) * 3);
+                        if (tickAlpha <= 0) continue;
+
+                        ctx.globalAlpha = erp * tickAlpha;
+
+                        // Tick
+                        Draw.line(ctx, tickX, rulerY - 5 * s, tickX, rulerY + 5 * s, '#b0a594', 1.5 * s);
+
+                        // Label
+                        const expLabel = '10' + ['\u2070', '\u00b9', '\u00b2', '\u00b3', '\u2074', '\u2075'][ex];
+                        Draw.label(ctx, expLabel, tickX, rulerY + 16 * s, '#7a7060', 9 * s, false);
+                    }
+
+                    // Markers for P and T on the ruler at 10^4 position
+                    if (erp > 0.6) {
+                        const markerP = Math.min(1, (erp - 0.6) / 0.3);
+                        const emP = ease(markerP);
+                        const exp4X = rulerLeft + (4 / 5) * rulerW;
+
+                        // Marker for P (Peso) - slightly left of 10^4
+                        const pX = exp4X - 8 * s;
+                        ctx.globalAlpha = emP;
+
+                        // Drop-in from above
+                        const dropOffset = (1 - emP) * 20 * s;
+                        Draw.circle(ctx, pX, rulerY - 14 * s - dropOffset, 8 * s, 'rgba(90,143,168,0.2)', '#5a8fa8', 1.5 * s);
+                        Draw.label(ctx, 'P', pX, rulerY - 14 * s - dropOffset, '#5a8fa8', 9 * s);
+
+                        // Marker for T (Tensione) - slightly right of 10^4
+                        const tX = exp4X + 8 * s;
+                        const tDelay = markerP > 0.3 ? Math.min(1, (markerP - 0.3) / 0.7) : 0;
+                        const emT = ease(tDelay);
+                        ctx.globalAlpha = emT;
+
+                        const dropT = (1 - emT) * 20 * s;
+                        Draw.circle(ctx, tX, rulerY - 14 * s - dropT, 8 * s, 'rgba(90,154,106,0.2)', '#5a9a6a', 1.5 * s);
+                        Draw.label(ctx, 'T', tX, rulerY - 14 * s - dropT, '#5a9a6a', 9 * s);
+
+                        // Brace under both markers linking to 10^4
+                        if (emT > 0.5) {
+                            const braceAlpha = (emT - 0.5) * 2;
+                            ctx.globalAlpha = braceAlpha;
+                            Draw.brace(ctx, pX - 10 * s, rulerY + 26 * s, tX + 10 * s, rulerY + 26 * s, '#3d8b44', 1.2 * s, 'entrambi ~ 10\u2074 N', '#3d8b44', 9 * s);
+                        }
+                    }
 
                     ctx.globalAlpha = 1;
                 }
@@ -472,5 +674,6 @@ const Tema5 = (() => {
         }
     ];
 
-    return { steps };
+    return { id: 'notazione-scientifica', title: 'La notazione scientifica', icon: '\u{1F52C}', category: 'Strumenti', order: 1, steps };
 })();
+if (typeof TopicRegistry !== 'undefined') TopicRegistry.register(Tema5);

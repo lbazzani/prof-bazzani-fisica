@@ -5,9 +5,9 @@ const Tema8 = (() => {
         // ---- Step 1: Prima legge: l'inerzia ----
         {
             title: 'Prima legge: l\'inerzia',
-            text: 'La prima legge di Newton dice: un oggetto fermo <b>resta fermo</b>, e uno in moto <b>continua a muoversi</b> a velocita costante, A MENO CHE una <span class="term" data-term="forza">forza</span> agisca su di lui.<br><br>' +
-                'Questa proprieta si chiama <span class="highlight">inerzia</span>. Pensa a quando un autobus frena di colpo: tu continui ad andare avanti per inerzia!<br><br>' +
-                'Questa legge spiega anche l\'<span class="term" data-term="equilibrio">equilibrio</span>: se la somma delle forze e zero, l\'oggetto non cambia il suo moto.',
+            text: 'La prima legge di Newton dice: un oggetto fermo <b>resta fermo</b>, e uno in moto <b>continua a muoversi</b> a velocità costante, A MENO CHE una <span class="term" data-term="forza">forza</span> agisca su di lui.<br><br>' +
+                'Questa proprietà si chiama <span class="highlight">inerzia</span>. Pensa a quando un autobus frena di colpo: tu continui ad andare avanti per inerzia!<br><br>' +
+                'Questa legge spiega anche l\'<span class="term" data-term="equilibrio">equilibrio</span>: se la somma delle forze è zero, l\'oggetto non cambia il suo moto.',
             formula: '\\sum \\vec{F} = 0 \\quad \\Longrightarrow \\quad \\vec{v} = \\text{costante}',
             cleanDraw: true,
             duration: 1400,
@@ -134,9 +134,9 @@ const Tema8 = (() => {
         // ---- Step 2: Seconda legge: F = ma ----
         {
             title: 'Seconda legge: F = ma',
-            text: 'Questa e LA equazione della meccanica. La <span class="term" data-term="forza">forza</span> netta su un oggetto e uguale alla sua <span class="term" data-term="massa">massa</span> per l\'accelerazione.<br><br>' +
-                'Piu forza = piu accelerazione. Piu massa = meno accelerazione (piu difficile da spingere). Ecco perche un camion carico accelera meno di un\'auto vuota con lo stesso motore!<br><br>' +
-                'Nei nostri problemi, quando <span class="highlight">\u03a3F = 0</span>, l\'accelerazione e zero: quello e l\'<span class="term" data-term="equilibrio">equilibrio</span>!',
+            text: 'Questa è LA equazione della meccanica. La <span class="term" data-term="forza">forza</span> netta su un oggetto è uguale alla sua <span class="term" data-term="massa">massa</span> per l\'accelerazione.<br><br>' +
+                'Più forza = più accelerazione. Più massa = meno accelerazione (più difficile da spingere). Ecco perché un camion carico accelera meno di un\'auto vuota con lo stesso motore!<br><br>' +
+                'Nei nostri problemi, quando <span class="highlight">\u03a3F = 0</span>, l\'accelerazione è zero: quello è l\'<span class="term" data-term="equilibrio">equilibrio</span>!',
             formula: '\\vec{F} = m \\cdot \\vec{a}',
             cleanDraw: true,
             duration: 1400,
@@ -258,9 +258,9 @@ const Tema8 = (() => {
         // ---- Step 3: Terza legge: azione e reazione ----
         {
             title: 'Terza legge: azione e reazione',
-            text: 'Per ogni <span class="term" data-term="forza">forza</span> (azione), c\'e una forza <b>uguale e opposta</b> (reazione). Se spingi un muro, il muro ti spinge indietro con la stessa forza.<br><br>' +
-                '<span class="highlight">IMPORTANTE</span>: azione e reazione agiscono su oggetti DIVERSI! Il <span class="term" data-term="peso">peso</span> del libro tira la Terra verso il basso, ma non ce ne accorgiamo perche la Terra e troppo massiccia.<br><br>' +
-                'Ecco perche il pavimento "spinge in su" con la <span class="term" data-term="reazione-normale">reazione normale</span> N = P.',
+            text: 'Per ogni <span class="term" data-term="forza">forza</span> (azione), c\'è una forza <b>uguale e opposta</b> (reazione). Se spingi un muro, il muro ti spinge indietro con la stessa forza.<br><br>' +
+                '<span class="highlight">IMPORTANTE</span>: azione e reazione agiscono su oggetti DIVERSI! Il <span class="term" data-term="peso">peso</span> del libro tira la Terra verso il basso, ma non ce ne accorgiamo perché la Terra è troppo massiccia.<br><br>' +
+                'Ecco perché il pavimento "spinge in su" con la <span class="term" data-term="reazione-normale">reazione normale</span> N = P.',
             formula: '\\vec{F}_{A \\to B} = -\\vec{F}_{B \\to A}',
             cleanDraw: true,
             duration: 1600,
@@ -343,17 +343,20 @@ const Tema8 = (() => {
                     Draw.label(ctx, 'Libro', tableX, tableY - bookH / 2, '#fff', 8 * s);
 
                     // Weight (P) arrow down from book
+                    const pX = tableX - 15 * s;
                     if (fp > 0.4) {
                         const ap = Math.min(1, (fp - 0.4) / 0.4);
-                        Draw.animatedArrow(ctx, tableX - 15 * s, tableY, tableX - 15 * s, tableY + 45 * s, '#c46b60', ap, 2.5 * s, 9 * s);
+                        Draw.animatedArrow(ctx, pX, tableY, pX, tableY + 45 * s, '#c46b60', ap, 2.5 * s, 9 * s);
                         if (ap > 0.5) Draw.label(ctx, 'P', tableX - 28 * s, tableY + 28 * s, '#c46b60', 12 * s);
                     }
 
                     // Normal (N) arrow up from book
+                    const nX = tableX + 15 * s;
+                    const nStartY = tableY - bookH;
                     if (fp > 0.6) {
                         const np = Math.min(1, (fp - 0.6) / 0.4);
-                        Draw.animatedArrow(ctx, tableX + 15 * s, tableY - bookH, tableX + 15 * s, tableY - bookH - 45 * s, '#5a8fa8', np, 2.5 * s, 9 * s);
-                        if (np > 0.5) Draw.label(ctx, 'N', tableX + 28 * s, tableY - bookH - 28 * s, '#5a8fa8', 12 * s);
+                        Draw.animatedArrow(ctx, nX, nStartY, nX, nStartY - 45 * s, '#5a8fa8', np, 2.5 * s, 9 * s);
+                        if (np > 0.5) Draw.label(ctx, 'N', tableX + 28 * s, nStartY - 28 * s, '#5a8fa8', 12 * s);
                     }
 
                     ctx.globalAlpha = 1;
@@ -381,7 +384,7 @@ const Tema8 = (() => {
         {
             title: 'Le tre leggi insieme',
             text: 'Le tre leggi lavorano insieme. Pensiamo all\'auto sul carro attrezzi:<br><br>' +
-                'La <b>prima legge</b> ci dice che l\'auto e in <span class="term" data-term="equilibrio">equilibrio</span> (\u03a3F = 0, perche e ferma). La <b>seconda legge</b> conferma: a = 0, quindi la forza netta e zero. La <b>terza legge</b> spiega PERCHE esiste la <span class="term" data-term="reazione-normale">reazione normale</span>: l\'auto spinge il piano, il piano risponde.<br><br>' +
+                'La <b>prima legge</b> ci dice che l\'auto è in <span class="term" data-term="equilibrio">equilibrio</span> (\u03a3F = 0, perché è ferma). La <b>seconda legge</b> conferma: a = 0, quindi la forza netta è zero. La <b>terza legge</b> spiega PERCHE esiste la <span class="term" data-term="reazione-normale">reazione normale</span>: l\'auto spinge il piano, il piano risponde.<br><br>' +
                 'Ogni volta che risolvi un problema, stai usando tutte e tre le leggi!',
             formula: null,
             cleanDraw: true,
@@ -532,11 +535,11 @@ const Tema8 = (() => {
             }
         },
 
-        // ---- Step 5: Perche servono? ----
+        // ---- Step 5: Perché servono? ----
         {
-            title: 'Perche servono?',
-            text: 'Ogni problema di questo corso usa le leggi di Newton! <b>Problema 1</b> (carro attrezzi): equilibrio significa \u03a3F = 0 (1\u00aa legge), e cosi troviamo la tensione.<br><br>' +
-                '<b>Problema 2</b> (scala a pioli): equilibrio di forze E di momenti. <b>Problema 3</b> (biliardo): l\'<span class="term" data-term="impulso">impulso</span> cambia la <span class="term" data-term="quantita-di-moto">quantita di moto</span>, che E la 2\u00aa legge sotto mentite spoglie (F = \u0394p/\u0394t).<br><br>' +
+            title: 'Perché servono?',
+            text: 'Ogni problema di questo corso usa le leggi di Newton! <b>Problema 1</b> (carro attrezzi): equilibrio significa \u03a3F = 0 (1\u00aa legge), e così troviamo la tensione.<br><br>' +
+                '<b>Problema 2</b> (scala a pioli): equilibrio di forze E di momenti. <b>Problema 3</b> (biliardo): l\'<span class="term" data-term="impulso">impulso</span> cambia la <span class="term" data-term="quantita-di-moto">quantità di moto</span>, che è la 2\u00aa legge sotto mentite spoglie (F = \u0394p/\u0394t).<br><br>' +
                 'Le leggi di Newton sono le <span class="highlight">fondamenta di TUTTA la meccanica</span>!',
             formula: 'F \\cdot \\Delta t = \\Delta p \\quad \\text{è la 2ª legge in forma di impulso!}',
             cleanDraw: true,
@@ -727,5 +730,27 @@ const Tema8 = (() => {
         }
     ];
 
-    return { steps };
+    const quiz = [
+        {
+            question: 'Un oggetto si muove a velocit\u00e0 costante in linea retta. La forza totale su di esso \u00e8...',
+            options: ['Uguale alla velocit\u00e0', 'Zero', 'Uguale alla massa', 'Costante ma non zero'],
+            correct: 1,
+            explanation: 'Per la prima legge di Newton, se un oggetto si muove a velocit\u00e0 costante (o \u00e8 fermo), la somma delle forze \u00e8 zero!'
+        },
+        {
+            question: 'Se raddoppi la forza applicata a un oggetto (stessa massa), l\'accelerazione...',
+            options: ['Resta uguale', 'Si dimezza', 'Raddoppia', 'Quadruplica'],
+            correct: 2,
+            explanation: 'Dalla seconda legge, F = ma. Se F raddoppia e m resta uguale, anche a raddoppia. Forza e accelerazione sono direttamente proporzionali!'
+        },
+        {
+            question: 'Spingi un muro con una forza di 50 N. Il muro ti spinge indietro con una forza...',
+            options: ['Di 0 N', 'Di 25 N', 'Uguale e opposta (50 N)', 'Maggiore (100 N)'],
+            correct: 2,
+            explanation: 'Per la terza legge di Newton, ad ogni azione corrisponde una reazione uguale e contraria. Il muro ti spinge con 50 N nella direzione opposta!'
+        }
+    ];
+
+    return { id: 'newton', title: 'Le tre leggi di Newton', icon: '\u{1F34E}', category: 'Meccanica', order: 3, steps, quiz };
 })();
+if (typeof TopicRegistry !== 'undefined') TopicRegistry.register(Tema8);

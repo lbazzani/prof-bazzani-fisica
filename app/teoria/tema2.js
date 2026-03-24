@@ -255,7 +255,7 @@ const Tema2 = (() => {
                     // Downhill direction along slope (from box towards base)
                     const dhx = -Math.cos(angle), dhy = Math.sin(angle);
                     // Perpendicular into the surface (pointing into the plane)
-                    const pnx = -Math.sin(angle), pny = -Math.cos(angle);
+                    const pnx = Math.sin(angle), pny = Math.cos(angle);
 
                     // Px along slope (downhill)
                     const pxMag = pLen * Math.sin(angle);
@@ -272,7 +272,7 @@ const Tema2 = (() => {
                         bxMid + pnx * pyMag, byMid + pny * pyMag,
                         '#5a8fa8', dp, 2.5 * s, 9 * s);
                     if (dp > 0.5) {
-                        Draw.label(ctx, 'Py', bxMid + pnx * pyMag - 14 * s, byMid + pny * pyMag - 6 * s, '#5a8fa8', 13 * s);
+                        Draw.label(ctx, 'Py', bxMid + pnx * pyMag + 14 * s, byMid + pny * pyMag + 6 * s, '#5a8fa8', 13 * s);
                     }
 
                     // Dashed lines completing the parallelogram
@@ -352,8 +352,8 @@ const Tema2 = (() => {
 
                 const pLen = 75 * s;
                 const dhx = -Math.cos(angle), dhy = Math.sin(angle);
-                const pnx = -Math.sin(angle), pny = -Math.cos(angle);
-                const upx = Math.sin(angle), upy = Math.cos(angle);
+                const pnx = Math.sin(angle), pny = Math.cos(angle);
+                const nOutX = -Math.sin(angle), nOutY = -Math.cos(angle);
                 const uhx = Math.cos(angle), uhy = -Math.sin(angle);
 
                 // P (weight, down)
@@ -380,17 +380,17 @@ const Tema2 = (() => {
                     Draw.animatedArrow(ctx, bxMid, byMid,
                         bxMid + pnx * pyMag, byMid + pny * pyMag,
                         '#5a8fa8', dp, 2.5 * s, 9 * s);
-                    if (dp > 0.5) Draw.label(ctx, 'Py', bxMid + pnx * pyMag - 14 * s, byMid + pny * pyMag - 8 * s, '#5a8fa8', 12 * s);
+                    if (dp > 0.5) Draw.label(ctx, 'Py', bxMid + pnx * pyMag + 14 * s, byMid + pny * pyMag + 6 * s, '#5a8fa8', 12 * s);
                 }
 
-                // N (normal reaction, opposite to Py)
+                // N (normal reaction, opposite to Py — away from surface)
                 if (p > 0.5) {
                     const dp = Math.min(1, (p - 0.5) * 4);
                     const nMag = pLen * Math.cos(angle);
                     Draw.animatedArrow(ctx, bxMid, byMid,
-                        bxMid + upx * nMag, byMid - upy * nMag,
+                        bxMid + nOutX * nMag, byMid + nOutY * nMag,
                         '#5a9a6a', dp, 2.5 * s, 9 * s);
-                    if (dp > 0.5) Draw.label(ctx, 'N', bxMid + upx * nMag + 12 * s, byMid - upy * nMag - 6 * s, '#5a9a6a', 13 * s);
+                    if (dp > 0.5) Draw.label(ctx, 'N', bxMid + nOutX * nMag - 14 * s, byMid + nOutY * nMag - 6 * s, '#5a9a6a', 13 * s);
                 }
 
                 // Fa (friction, uphill along slope, opposite to Px)
@@ -405,125 +405,201 @@ const Tema2 = (() => {
             }
         },
 
-        // ---- STEP 5: L'angolo cambia tutto ----
+        // ---- STEP 5: L'angolo cambia tutto (interattivo) ----
         {
             title: "L'angolo cambia tutto",
-            text: 'Guarda cosa succede cambiando l\'angolo del piano:<br><br>' +
-                '&bull; <b>Angolo piccolo</b> (10°): P<sub>x</sub> è piccola, il blocco quasi non scivola<br>' +
-                '&bull; <b>Angolo medio</b> (45°): P<sub>x</sub> e P<sub>y</sub> sono uguali<br>' +
-                '&bull; <b>Angolo grande</b> (80°): P<sub>x</sub> è enorme, il blocco scivola subito!<br><br>' +
-                'Ecco perché è più facile salire una rampa dolce che una ripida.',
+            text: 'Trascina il cursore per cambiare l\'angolo del piano e osserva come cambiano le componenti del peso:<br><br>' +
+                '&bull; <b style="color:#9b6fb5">P<sub>x</sub></b> (fa scivolare) <b>cresce</b> con l\'angolo<br>' +
+                '&bull; <b style="color:#5a8fa8">P<sub>y</sub></b> (preme sulla superficie) <b>diminuisce</b> con l\'angolo<br><br>' +
+                'A 45° le due componenti sono uguali. Ecco perché è più facile salire una rampa dolce che una ripida!',
             formula: null,
             cleanDraw: true,
-            draw(ctx, w, h, p) {
+            interactive: {
+                sliders: [
+                    { id: 'angle', label: 'Angolo α', min: 5, max: 85, step: 1, default: 30, unit: '°' }
+                ]
+            },
+            draw(ctx, w, h, p, controls) {
                 ctx.fillStyle = '#faf8f5';
                 ctx.fillRect(0, 0, w, h);
                 const s = Draw.S(w, h);
 
-                const angles = [10 * Math.PI / 180, 45 * Math.PI / 180, 80 * Math.PI / 180];
-                const labels = ['10°', '45°', '80°'];
-                const colW = w / 3;
+                const angleDeg = (controls && controls.angle) || 30;
+                const angle = angleDeg * Math.PI / 180;
 
-                for (let i = 0; i < 3; i++) {
-                    const phase = Math.min(1, Math.max(0, (p - i * 0.25) * 3));
-                    if (phase <= 0) continue;
+                // --- Inclined plane geometry ---
+                const planeLen = 250 * s;
+                const baseX = w * 0.08, baseY = h * 0.88;
+                const topX = baseX + planeLen * Math.cos(angle);
+                const topY = baseY - planeLen * Math.sin(angle);
+                const rightX = baseX + planeLen * Math.cos(angle);
 
-                    const ang = angles[i];
-                    const cx = colW * i + colW * 0.5;
-                    const baseY2 = h * 0.80;
-                    const plLen = 100 * s;
+                // Fade-in factor for initial animation
+                const fade = Math.min(1, p * 2);
+                ctx.globalAlpha = fade;
 
-                    // Small inclined plane
-                    const plBaseX = cx - 45 * s;
-                    const plTopX = plBaseX + plLen * Math.cos(ang);
-                    const plTopY = baseY2 - plLen * Math.sin(ang);
-                    const plRightX = plBaseX + plLen * Math.cos(ang);
+                // Draw plane triangle
+                ctx.fillStyle = '#e8e3db';
+                ctx.strokeStyle = '#b0a898';
+                ctx.lineWidth = 2 * s;
+                ctx.beginPath();
+                ctx.moveTo(baseX, baseY);
+                ctx.lineTo(rightX, baseY);
+                ctx.lineTo(topX, topY);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
 
-                    ctx.globalAlpha = phase;
+                // Floor line
+                ctx.strokeStyle = '#c0b5a5';
+                ctx.lineWidth = 2 * s;
+                ctx.beginPath();
+                ctx.moveTo(0, baseY);
+                ctx.lineTo(w * 0.65, baseY);
+                ctx.stroke();
 
-                    // Draw plane triangle
-                    ctx.fillStyle = '#e8e3db';
-                    ctx.strokeStyle = '#b0a898';
-                    ctx.lineWidth = 1.5 * s;
-                    ctx.beginPath();
-                    ctx.moveTo(plBaseX, baseY2);
-                    ctx.lineTo(plRightX, baseY2);
-                    ctx.lineTo(plTopX, plTopY);
-                    ctx.closePath();
-                    ctx.fill();
-                    ctx.stroke();
+                // Angle arc at bottom-right corner
+                const arcR = 28 * s;
+                Draw.arc(ctx, rightX, baseY, arcR, Math.PI, Math.PI + angle, '#d4956a', 2 * s);
+                // Angle label
+                const arcLabelR = arcR + 14 * s;
+                const arcLabelAngle = Math.PI + angle * 0.5;
+                Draw.label(ctx, angleDeg + '°', rightX + arcLabelR * Math.cos(arcLabelAngle), baseY + arcLabelR * Math.sin(arcLabelAngle), '#d4956a', 11 * s);
 
-                    // Angle label
-                    Draw.label(ctx, labels[i], cx, baseY2 + 18 * s, '#d4956a', 12 * s);
+                // --- Box on incline ---
+                const boxT = 0.45;
+                const bxMid = baseX + (topX - baseX) * boxT;
+                const byMid = baseY + (topY - baseY) * boxT;
+                const boxSize = 30 * s;
 
-                    // Box position on incline
-                    const bT = 0.5;
-                    const bx = plBaseX + (plTopX - plBaseX) * bT;
-                    const by = baseY2 + (plTopY - baseY2) * bT;
+                ctx.save();
+                ctx.translate(bxMid, byMid);
+                ctx.rotate(-angle);
+                Draw.roundRect(ctx, -boxSize / 2, -boxSize, boxSize, boxSize, 4 * s, '#d4956a');
+                ctx.strokeStyle = '#b07848';
+                ctx.lineWidth = 1.5 * s;
+                ctx.strokeRect(-boxSize / 2, -boxSize, boxSize, boxSize);
+                ctx.restore();
 
-                    // Small box
-                    const bSz = 16 * s;
-                    ctx.save();
-                    ctx.translate(bx, by);
-                    ctx.rotate(-ang);
-                    Draw.roundRect(ctx, -bSz / 2, -bSz, bSz, bSz, 2 * s, '#d4956a');
-                    ctx.restore();
+                // --- Force arrows (appear after initial fade) ---
+                const forceP = Math.min(1, Math.max(0, (p - 0.2) * 2.5));
+                if (forceP > 0) {
+                    ctx.globalAlpha = forceP;
+                    const pLen = 90 * s;
 
-                    // Px (along slope downhill) and Py (perpendicular into surface)
-                    const pBase = 50 * s;
-                    const pxMag = pBase * Math.sin(ang);
-                    const pyMag = pBase * Math.cos(ang);
-
-                    // Downhill direction
-                    const dhx2 = -Math.cos(ang), dhy2 = Math.sin(ang);
-                    // Into surface direction
-                    const pnx2 = -Math.sin(ang), pny2 = -Math.cos(ang);
-
-                    if (phase > 0.3) {
-                        const fp = Math.min(1, (phase - 0.3) * 2.5);
-
-                        // Px
-                        Draw.animatedArrow(ctx, bx, by,
-                            bx + dhx2 * pxMag, by + dhy2 * pxMag,
-                            '#9b6fb5', fp, 2 * s, 7 * s);
-                        if (fp > 0.6 && pxMag > 5 * s) {
-                            Draw.label(ctx, 'Px', bx + dhx2 * pxMag - 10 * s, by + dhy2 * pxMag + 12 * s, '#9b6fb5', 10 * s);
-                        }
-
-                        // Py
-                        Draw.animatedArrow(ctx, bx, by,
-                            bx + pnx2 * pyMag, by + pny2 * pyMag,
-                            '#5a8fa8', fp, 2 * s, 7 * s);
-                        if (fp > 0.6 && pyMag > 5 * s) {
-                            Draw.label(ctx, 'Py', bx + pnx2 * pyMag - 12 * s, by + pny2 * pyMag - 8 * s, '#5a8fa8', 10 * s);
-                        }
+                    // P (weight, straight down)
+                    Draw.animatedArrow(ctx, bxMid, byMid, bxMid, byMid + pLen, '#c46b60', forceP, 3 * s, 10 * s);
+                    if (forceP > 0.4) {
+                        Draw.label(ctx, 'P', bxMid + 14 * s, byMid + pLen * 0.65, '#c46b60', 13 * s);
                     }
 
-                    ctx.globalAlpha = 1;
+                    // Component directions
+                    // Downhill along slope
+                    const dhx = -Math.cos(angle), dhy = Math.sin(angle);
+                    // Into surface (perpendicular)
+                    const pnx = Math.sin(angle), pny = Math.cos(angle);
+
+                    // Px along slope (proportional to sin)
+                    const pxMag = pLen * Math.sin(angle);
+                    Draw.animatedArrow(ctx, bxMid, byMid,
+                        bxMid + dhx * pxMag, byMid + dhy * pxMag,
+                        '#9b6fb5', forceP, 2.5 * s, 9 * s);
+                    if (forceP > 0.5 && pxMag > 6 * s) {
+                        Draw.label(ctx, 'Px', bxMid + dhx * pxMag - 14 * s, byMid + dhy * pxMag + 12 * s, '#9b6fb5', 12 * s);
+                    }
+
+                    // Py perpendicular to slope (proportional to cos)
+                    const pyMag = pLen * Math.cos(angle);
+                    Draw.animatedArrow(ctx, bxMid, byMid,
+                        bxMid + pnx * pyMag, byMid + pny * pyMag,
+                        '#5a8fa8', forceP, 2.5 * s, 9 * s);
+                    if (forceP > 0.5 && pyMag > 6 * s) {
+                        Draw.label(ctx, 'Py', bxMid + pnx * pyMag + 14 * s, byMid + pny * pyMag + 6 * s, '#5a8fa8', 12 * s);
+                    }
+
+                    // Dashed parallelogram lines
+                    if (forceP > 0.7) {
+                        ctx.globalAlpha = (forceP - 0.7) / 0.3;
+                        const endPx_x = bxMid + dhx * pxMag;
+                        const endPx_y = byMid + dhy * pxMag;
+                        const endPy_x = bxMid + pnx * pyMag;
+                        const endPy_y = byMid + pny * pyMag;
+                        const endP_x = bxMid;
+                        const endP_y = byMid + pLen;
+                        Draw.dashedLine(ctx, endPx_x, endPx_y, endP_x, endP_y, '#bbb', 1 * s);
+                        Draw.dashedLine(ctx, endPy_x, endPy_y, endP_x, endP_y, '#bbb', 1 * s);
+                    }
                 }
 
-                // Title labels at top
-                if (p > 0.1) {
-                    ctx.globalAlpha = Math.min(1, (p - 0.1) * 3);
-                    Draw.label(ctx, 'Px piccola', colW * 0.5, h * 0.10, '#9b6fb5', 10 * s, false);
-                    Draw.label(ctx, 'Py grande', colW * 0.5, h * 0.18, '#5a8fa8', 10 * s, false);
-                    ctx.globalAlpha = 1;
+                // --- Bar chart on the right side ---
+                const barP = Math.min(1, Math.max(0, (p - 0.5) * 2.5));
+                if (barP > 0) {
+                    ctx.globalAlpha = barP;
+
+                    const barAreaX = w * 0.62;
+                    const barAreaY = h * 0.12;
+                    const maxBarW = w * 0.30;
+                    const barH = 22 * s;
+                    const barGap = 16 * s;
+
+                    const sinVal = Math.sin(angle);
+                    const cosVal = Math.cos(angle);
+
+                    // Title
+                    Draw.label(ctx, 'Componenti', barAreaX + maxBarW * 0.5, barAreaY, '#555', 11 * s, false);
+
+                    // Px bar
+                    const pxBarY = barAreaY + 22 * s;
+                    const pxBarW = maxBarW * sinVal * barP;
+                    Draw.roundRect(ctx, barAreaX, pxBarY, pxBarW, barH, 4 * s, '#9b6fb5');
+                    // Px label
+                    Draw.label(ctx, 'Px = P × ' + sinVal.toFixed(2), barAreaX + maxBarW * 0.5, pxBarY + barH + 14 * s, '#9b6fb5', 10 * s, false);
+
+                    // Py bar
+                    const pyBarY = pxBarY + barH + barGap + 18 * s;
+                    const pyBarW = maxBarW * cosVal * barP;
+                    Draw.roundRect(ctx, barAreaX, pyBarY, pyBarW, barH, 4 * s, '#5a8fa8');
+                    // Py label
+                    Draw.label(ctx, 'Py = P × ' + cosVal.toFixed(2), barAreaX + maxBarW * 0.5, pyBarY + barH + 14 * s, '#5a8fa8', 10 * s, false);
+
+                    // Px = Py highlight at 45 degrees
+                    if (angleDeg === 45) {
+                        const eqY = pyBarY + barH + 38 * s;
+                        // Pulsing glow effect
+                        const pulse = 0.7 + 0.3 * Math.sin(Date.now() * 0.004);
+                        ctx.globalAlpha = barP * pulse;
+
+                        // Background pill
+                        const pillW = 120 * s;
+                        const pillH = 24 * s;
+                        const pillX = barAreaX + maxBarW * 0.5 - pillW / 2;
+                        Draw.roundRect(ctx, pillX, eqY - pillH / 2, pillW, pillH, pillH / 2, 'rgba(90,154,106,0.15)');
+                        Draw.label(ctx, 'Px = Py !', barAreaX + maxBarW * 0.5, eqY, '#5a9a6a', 13 * s);
+
+                        ctx.globalAlpha = barP;
+                    }
                 }
-                if (p > 0.35) {
-                    ctx.globalAlpha = Math.min(1, (p - 0.35) * 3);
-                    Draw.label(ctx, 'Px = Py', colW * 1.5, h * 0.10, '#888', 10 * s, false);
-                    Draw.label(ctx, 'uguali!', colW * 1.5, h * 0.18, '#888', 10 * s, false);
-                    ctx.globalAlpha = 1;
-                }
-                if (p > 0.6) {
-                    ctx.globalAlpha = Math.min(1, (p - 0.6) * 3);
-                    Draw.label(ctx, 'Px grande', colW * 2.5, h * 0.10, '#9b6fb5', 10 * s, false);
-                    Draw.label(ctx, 'Py piccola', colW * 2.5, h * 0.18, '#5a8fa8', 10 * s, false);
-                    ctx.globalAlpha = 1;
-                }
+
+                ctx.globalAlpha = 1;
             }
         }
     ];
 
-    return { steps };
+    const quiz = [
+        {
+            question: 'Se l\'angolo del piano inclinato aumenta, cosa succede alla componente Px?',
+            options: ['Diminuisce', 'Aumenta', 'Resta uguale', 'Si annulla'],
+            correct: 1,
+            explanation: 'Px = P sin \u03b1. Quando l\'angolo \u03b1 aumenta, sin \u03b1 cresce, quindi Px aumenta: il blocco tende a scivolare di pi\u00f9!'
+        },
+        {
+            question: 'A quale angolo le componenti Px e Py sono uguali?',
+            options: ['30\u00b0', '60\u00b0', '45\u00b0', '90\u00b0'],
+            correct: 2,
+            explanation: 'A 45\u00b0, sin 45\u00b0 = cos 45\u00b0, quindi Px = P sin 45\u00b0 = P cos 45\u00b0 = Py. Le due componenti sono uguali!'
+        }
+    ];
+
+    return { id: 'piano-inclinato', title: 'Il piano inclinato', icon: '\u{1F4D0}', category: 'Meccanica', order: 6, steps, quiz };
 })();
+if (typeof TopicRegistry !== 'undefined') TopicRegistry.register(Tema2);

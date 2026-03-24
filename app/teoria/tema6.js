@@ -6,8 +6,8 @@ const Tema6 = (() => {
         {
             title: 'Scalari e vettori',
             text: 'Alcune grandezze in fisica sono solo numeri: temperatura (20 °C), massa (5 kg), tempo (3 s). Queste si chiamano <b>grandezze scalari</b>.<br><br>' +
-                'Altre grandezze hanno bisogno anche di una <b>direzione</b>: <span class="term" data-term="forza">forza</span>, <span class="term" data-term="velocita">velocita</span>, spostamento. Queste sono <b>grandezze vettoriali</b> (<span class="term" data-term="vettore">vettori</span>).<br><br>' +
-                'Un vettore e come dare indicazioni stradali: non basta dire <span class="highlight">"cammina 100 metri"</span>, devi dire <span class="highlight">"cammina 100 metri verso NORD"</span>!',
+                'Altre grandezze hanno bisogno anche di una <b>direzione</b>: <span class="term" data-term="forza">forza</span>, <span class="term" data-term="velocita">velocità</span>, spostamento. Queste sono <b>grandezze vettoriali</b> (<span class="term" data-term="vettore">vettori</span>).<br><br>' +
+                'Un vettore è come dare indicazioni stradali: non basta dire <span class="highlight">"cammina 100 metri"</span>, devi dire <span class="highlight">"cammina 100 metri verso NORD"</span>!',
             formula: null,
             cleanDraw: true,
             duration: 1200,
@@ -111,11 +111,11 @@ const Tema6 = (() => {
         // ---- Step 2: Rappresentare un vettore ----
         {
             title: 'Rappresentare un vettore',
-            text: 'Un <span class="term" data-term="vettore">vettore</span> si disegna come una <b>freccia</b>. Ha tre proprieta:<br><br>' +
-                '1. <b>Modulo</b> (intensita): la lunghezza della freccia<br>' +
+            text: 'Un <span class="term" data-term="vettore">vettore</span> si disegna come una <b>freccia</b>. Ha tre proprietà:<br><br>' +
+                '1. <b>Modulo</b> (intensità): la lunghezza della freccia<br>' +
                 '2. <b>Direzione</b>: la retta su cui giace la freccia<br>' +
                 '3. <b>Verso</b>: da che parte punta la freccia<br><br>' +
-                'Per indicare che una grandezza e un vettore, scriviamo una freccetta sopra il simbolo: <span class="highlight">F\u20D7</span>',
+                'Per indicare che una grandezza è un vettore, scriviamo una freccetta sopra il simbolo: <span class="highlight">F\u20D7</span>',
             formula: '\\vec{F} \\quad \\longrightarrow \\quad |\\vec{F}| = \\text{modulo (intensità)}',
             cleanDraw: true,
             duration: 1400,
@@ -245,8 +245,8 @@ const Tema6 = (() => {
         // ---- Step 3: Le componenti ----
         {
             title: 'Le componenti',
-            text: 'Qualsiasi <span class="term" data-term="vettore">vettore</span> puo essere scomposto in due parti perpendicolari chiamate <span class="term" data-term="componente">componenti</span>.<br><br>' +
-                'E come dire: invece di camminare in diagonale, prima vado in orizzontale e poi in verticale. Il risultato e lo stesso!<br><br>' +
+            text: 'Qualsiasi <span class="term" data-term="vettore">vettore</span> può essere scomposto in due parti perpendicolari chiamate <span class="term" data-term="componente">componenti</span>.<br><br>' +
+                'È come dire: invece di camminare in diagonale, prima vado in orizzontale e poi in verticale. Il risultato è lo stesso!<br><br>' +
                 'Se conosci l\'angolo <b>\u03B1</b>, trovi le componenti con <span class="highlight">seno e coseno</span>: la componente orizzontale usa il coseno, quella verticale usa il seno.',
             formula: 'F_x = F \\cos\\alpha \\qquad F_y = F \\sin\\alpha',
             cleanDraw: true,
@@ -350,7 +350,7 @@ const Tema6 = (() => {
         {
             title: 'Somma di vettori',
             text: 'Per sommare i <span class="term" data-term="vettore">vettori</span> graficamente, usa il metodo <b>punta-coda</b>: metti la coda del secondo vettore sulla punta del primo. La <b>risultante</b> va dall\'inizio del primo alla fine del secondo.<br><br>' +
-                'Con le <span class="term" data-term="componente">componenti</span> e ancora piu facile: sommi le componenti x tra loro e le componenti y tra loro!<br><br>' +
+                'Con le <span class="term" data-term="componente">componenti</span> è ancora più facile: sommi le componenti x tra loro e le componenti y tra loro!<br><br>' +
                 '<span class="highlight">R<sub>x</sub> = A<sub>x</sub> + B<sub>x</sub></span> e <span class="highlight">R<sub>y</sub> = A<sub>y</sub> + B<sub>y</sub></span>',
             formula: '\\vec{R} = \\vec{A} + \\vec{B} \\qquad R_x = A_x + B_x, \\quad R_y = A_y + B_y',
             cleanDraw: true,
@@ -438,9 +438,9 @@ const Tema6 = (() => {
 
         // ---- Step 5: Perche i vettori servono? ----
         {
-            title: 'Perche i vettori servono?',
+            title: 'Perché i vettori servono?',
             text: 'In <b>tutti</b> i nostri problemi usiamo i <span class="term" data-term="vettore">vettori</span>!<br><br>' +
-                'Il <b>peso</b> sul piano inclinato va scomposto in <span class="term" data-term="componente">componenti</span>. Le <span class="term" data-term="forza">forze</span> sulla scala hanno componenti x e y. Le <span class="term" data-term="velocita">velocita</span> delle palle da biliardo dopo l\'urto hanno componenti x e y.<br><br>' +
+                'Il <b>peso</b> sul piano inclinato va scomposto in <span class="term" data-term="componente">componenti</span>. Le <span class="term" data-term="forza">forze</span> sulla scala hanno componenti x e y. Le <span class="term" data-term="velocita">velocità</span> delle palle da biliardo dopo l\'urto hanno componenti x e y.<br><br>' +
                 '<span class="highlight">Padroneggiare i vettori = padroneggiare la fisica!</span>',
             formula: null,
             cleanDraw: true,
@@ -606,5 +606,6 @@ const Tema6 = (() => {
         }
     ];
 
-    return { steps };
+    return { id: 'vettori', title: 'I vettori: le basi', icon: '\u{27A1}\u{FE0F}', category: 'Strumenti', order: 2, steps };
 })();
+if (typeof TopicRegistry !== 'undefined') TopicRegistry.register(Tema6);

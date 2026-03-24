@@ -38,12 +38,37 @@ const Problema3 = (() => {
         ].forEach(([hx,hy]) => Draw.circle(ctx, hx, hy, 7*s, '#1a1a1a', null));
     }
 
+    const concept = {
+        title: 'Impulso e quantità di moto',
+        items: [
+            { name: 'L\'impulso (I = F × Δt)',
+              desc: 'Quando una forza agisce per un breve tempo, trasferisce <span class="term" data-term="quantita-di-moto">quantità di moto</span> all\'oggetto. La stecca dà un <span class="term" data-term="impulso">impulso</span> alla palla.' },
+            { name: 'Conservazione della qdm',
+              desc: 'Nell\'<span class="term" data-term="urto">urto</span> tra le palle, la quantità di moto totale <b>non cambia</b>. Vale in ogni direzione (x e y separatamente).' },
+            { name: 'Strategia di risoluzione',
+              desc: 'L\'impulso ci dà la qdm iniziale della palla bianca. La conservazione ci collega il "prima" al "dopo" l\'urto.' }
+        ],
+        formula: 'I = F \\cdot \\Delta t = \\Delta p \\qquad p_{\\text{prima}} = p_{\\text{dopo}}',
+        draw(ctx, w, h, p) {
+            const s = Draw.S(w, h);
+            ctx.fillStyle = '#faf8f5'; ctx.fillRect(0, 0, w, h);
+            const cx = w*0.5;
+            // Stecca → palla bianca → urto → due palle
+            if (p > 0.05) { const fp=Math.min(1,(p-0.05)/0.3); ctx.globalAlpha=fp; const y=h*0.35; Draw.animatedArrow(ctx,cx-120*s,y,cx-60*s,y,'#d4956a',fp,3*s,10*s); Draw.circle(ctx,cx-45*s,y,12*s,'#f0ebe0','#d8d0c0',2*s); Draw.animatedArrow(ctx,cx-30*s,y,cx+10*s,y,'#c46b60',fp,2.5*s,9*s); Draw.circle(ctx,cx+25*s,y,12*s,'#4caf50','#388e3c',2*s); if(fp>0.5){ Draw.label(ctx,'impulso',cx-90*s,y-20*s,'#d4956a',10*s,false); Draw.label(ctx,'urto',cx-10*s,y-20*s,'#c46b60',10*s,false); } }
+            // Dopo l'urto: V
+            if (p > 0.45) { const fp=Math.min(1,(p-0.45)/0.3); ctx.globalAlpha=fp; const ox=cx+70*s,oy=h*0.35,al=50*s,th=Math.PI/4; Draw.animatedArrow(ctx,ox,oy,ox+al*Math.cos(-th),oy+al*Math.sin(-th),'#c46b60',fp,2*s,8*s); Draw.animatedArrow(ctx,ox,oy,ox+al*Math.cos(th),oy+al*Math.sin(th),'#388e3c',fp,2*s,8*s); Draw.circle(ctx,ox+al*Math.cos(-th),oy+al*Math.sin(-th),8*s,'#f0ebe0','#d8d0c0',1.5*s); Draw.circle(ctx,ox+al*Math.cos(th),oy+al*Math.sin(th),8*s,'#4caf50','#388e3c',1.5*s); if(fp>0.5){ Draw.label(ctx,'90°',ox+20*s,oy,'rgba(255,255,255,0.7)',9*s); Draw.label(ctx,'dopo',ox,oy-25*s,'#888',10*s,false); } }
+            // Freccia logica in basso
+            if (p > 0.7) { ctx.globalAlpha=(p-0.7)/0.3; const y=h*0.75; Draw.roundRect(ctx,cx-115*s,y-14*s,230*s,28*s,6*s,'#e4f2e7'); ctx.strokeStyle='#81c784'; ctx.lineWidth=1.2*s; ctx.strokeRect(cx-115*s,y-14*s,230*s,28*s); Draw.label(ctx,'Impulso \u2192 qdm iniziale \u2192 qdm dopo urto',cx,y+1*s,'#3d8b44',10*s); }
+        }
+    };
+
     const steps = [
         {
             title: 'Il colpo di biliardo',
-            text: 'Un giocatore colpisce la <span class="highlight">palla bianca</span> con la stecca. La bianca rotola e <span class="term" data-term="urto">urta</span> una <span class="highlight">palla verde</span> ferma.<br><br>In questo problema useremo due concetti fondamentali:<br>' +
-                '&bull; L\'<b>impulso</b> (la "botta" della stecca)<br>' +
-                '&bull; La <b>conservazione della quantità di moto</b> (prima dell\'urto = dopo)',
+            text: 'Un giocatore colpisce la <span class="highlight">palla bianca</span> con la stecca. La bianca rotola e <span class="term" data-term="urto">urta</span> una <span class="highlight">palla verde</span> ferma.<br><br>' +
+                'Per risolvere useremo due idee:<br>' +
+                '&bull; L\'<span class="term" data-term="impulso">impulso</span>: la "botta" che la stecca dà alla palla (forza &times; tempo di contatto)<br>' +
+                '&bull; La <span class="term" data-term="quantita-di-moto">quantità di moto</span>: massa &times; velocità, si conserva negli <span class="term" data-term="urto">urti</span>',
             formula: null,
             duration: 2800, // animazione più lunga per questo step
             draw(ctx, w, h, p) {
@@ -171,7 +196,7 @@ const Problema3 = (() => {
         {
             title: 'Organizziamo i dati',
             text: '<b>Regola d\'oro:</b> scrivi sempre i dati prima di calcolare!<br><br>' +
-                '&bull; <span class="highlight">&Delta;t = 0,85 ms = 0,00085 s</span> (attenzione: ms = <span class="term" data-term="secondo">millisecondi</span>!)<br>' +
+                '&bull; <span class="highlight">&Delta;t = 0,85 ms = 0,00085 s</span> (attenzione: 1 ms = 0,001 <span class="term" data-term="secondo">secondi</span>!)<br>' +
                 '&bull; <span class="highlight">F = 750 N</span> &rarr; <span class="term" data-term="forza">forza</span> della stecca<br>' +
                 '&bull; <span class="highlight">v<sub>1</sub> = v<sub>2</sub> = 0,5 m/s</span> &rarr; <span class="term" data-term="velocita">velocità</span> dopo l\'<span class="term" data-term="urto">urto</span><br>' +
                 '&bull; <span class="highlight">Angolo = 90°</span> + simmetria (assunta dal testo) &rarr; ciascuna palla a 45°<br><br>' +
@@ -194,7 +219,9 @@ const Problema3 = (() => {
         },
         {
             title: 'L\'impulso della stecca',
-            text: '<b>Cos\'è l\'impulso?</b> Quando una <span class="term" data-term="forza">forza</span> agisce per un certo tempo, trasferisce una "spinta" chiamata <span class="highlight">impulso</span>: I = F &times; &Delta;t.<br><br>La forza è enorme (750 <span class="term" data-term="newton">N</span>!) ma il contatto dura solo 0,85 <span class="term" data-term="secondo">ms</span>.<br><br><b>Perché ci interessa?</b> L\'impulso è uguale alla variazione della <span class="term" data-term="quantita-di-moto">quantità di moto</span>. La palla parte da ferma, quindi: <b>I = m &middot; v<sub>0</sub></b>. Ci servirà alla fine!',
+            text: '<b>Cos\'è l\'<span class="term" data-term="impulso">impulso</span>?</b> Pensa a dare un pugno a un cuscino: la "botta" dipende sia dalla <span class="term" data-term="forza">forza</span> che da <b>quanto dura</b> il contatto. L\'impulso è proprio questo: <b>I = F &times; &Delta;t</b>.<br><br>' +
+                'Qui la forza è enorme (750 <span class="term" data-term="newton">N</span>!) ma il contatto dura solo 0,85 <span class="term" data-term="secondo">ms</span>: un lampo!<br><br>' +
+                '<b>Regola d\'oro:</b> l\'impulso è la <span class="term" data-term="quantita-di-moto">quantità di moto</span> che viene trasferita. La palla parte da ferma, quindi tutta la qdm le viene dall\'impulso: <b>I = m &middot; v<sub>0</sub></b>. Ci servirà alla fine!',
             formula: 'I = F \\cdot \\Delta t = 750 \\times 0{,}00085 = \\boxed{0{,}6375 \\text{ N}\\!\\cdot\\!\\text{s}}',
             draw(ctx, w, h, p) {
                 const g = geo(w, h), s = g.s;
@@ -220,10 +247,10 @@ const Problema3 = (() => {
         },
         {
             title: 'Le velocità dopo l\'urto',
-            text: 'Il testo ci dice due cose fondamentali sull\'<span class="term" data-term="urto">urto</span>:<br><br>' +
-                '&bull; L\'angolo tra le due <span class="term" data-term="velocita">velocità</span> è di <span class="highlight">90°</span><br>' +
-                '&bull; Il problema ci dice di <b>assumere</b> che le velocità siano <b>simmetriche</b> rispetto alla direzione iniziale<br><br>' +
-                'Con queste due informazioni possiamo dedurre che ciascuna palla fa <span class="highlight">45°</span> rispetto alla direzione della stecca (90° / 2 = 45°). Immagina una V aperta: la bianca va in alto-destra, la verde in basso-destra.',
+            text: 'Dopo l\'<span class="term" data-term="urto">urto</span>, le due palle si allontanano formando una <b>V</b>. Il testo ci dice:<br><br>' +
+                '&bull; L\'angolo tra le <span class="term" data-term="velocita">velocità</span> è di <span class="highlight">90°</span><br>' +
+                '&bull; Le velocità sono <b>simmetriche</b> rispetto alla direzione iniziale<br><br>' +
+                'Simmetria significa: la bianca devia in su di un certo angolo, la verde devia in giù dello stesso angolo. Siccome le due palle hanno la <b>stessa massa</b> e l\'angolo totale è 90°, ciascuna fa <span class="highlight">45°</span> (metà di 90°).',
             formula: '\\text{Angolo di ciascuna} = \\frac{90°}{2} = 45°',
             duration: 2000,
             draw(ctx, w, h, p) {
@@ -335,11 +362,11 @@ const Problema3 = (() => {
         },
         {
             title: 'Scomponiamo le velocità',
-            text: '<span class="term" data-term="componente">Scomponiamo</span> v<sub>1</sub> e v<sub>2</sub> in componenti x (avanti) e y (di lato).<br><br>' +
-                '<b>Osservazione chiave:</b><br>' +
-                '&bull; Le componenti <b>x sono uguali</b>: la spinta si spartisce<br>' +
-                '&bull; Le componenti <b>y sono opposte</b> e si annullano!<br><br>' +
-                '<b>Perché?</b> Prima dell\'<span class="term" data-term="urto">urto</span> non c\'era moto laterale (y = 0). La <span class="highlight">quantità di moto in y si conserva</span>, quindi resta zero anche dopo!',
+            text: '<span class="term" data-term="componente">Scomponiamo</span> v<sub>1</sub> e v<sub>2</sub> in componenti:<br>' +
+                '&bull; <b>x</b> (nella direzione della stecca, in avanti)<br>' +
+                '&bull; <b>y</b> (di lato, perpendicolare alla stecca)<br><br>' +
+                '<b>Osservazione chiave:</b> le componenti y delle due palle sono <b>uguali e opposte</b>, e si annullano!<br><br>' +
+                '<b>Perché?</b> Prima dell\'<span class="term" data-term="urto">urto</span> la palla bianca andava solo in avanti: la <span class="term" data-term="quantita-di-moto">quantità di moto</span> laterale era <b>zero</b>. Siccome la qdm <span class="term" data-term="conservazione-qdm">si conserva</span> in ogni direzione, anche dopo l\'urto la qdm laterale totale deve restare zero.',
             formula: 'v_x = 0{,}5 \\cos 45° \\approx 0{,}354 \\text{ m/s} \\\\[4pt] v_y = \\pm 0{,}5 \\sin 45° \\approx \\pm 0{,}354 \\text{ m/s}',
             draw(ctx, w, h, p) {
                 const g = geo(w, h), s = g.s;
@@ -387,10 +414,10 @@ const Problema3 = (() => {
         },
         {
             title: 'Conservazione della quantità di moto',
-            text: '<b>Principio fondamentale:</b> la <span class="highlight">quantità di moto totale si conserva</span>!<br><br>' +
-                '<b>Prima</b> (asse x): p<sub>i</sub> = m &middot; v<sub>0</sub><br>' +
-                '<b>Dopo</b> (asse x): p<sub>f</sub> = m &middot; v<sub>x</sub> + m &middot; v<sub>x</sub> = 2m &middot; v<sub>x</sub><br><br>' +
-                'Uguagliamo: m &middot; v<sub>0</sub> = 2m &middot; v<sub>x</sub>. La massa si semplifica! v<sub>0</sub> = 2 v<sub>x</sub>.',
+            text: 'Applichiamo la <span class="term" data-term="conservazione-qdm">conservazione della qdm</span> lungo l\'asse x (la direzione della stecca):<br><br>' +
+                '<b>PRIMA dell\'urto:</b> solo la bianca si muove &rarr; qdm = m &times; v<sub>0</sub><br>' +
+                '<b>DOPO l\'urto:</b> entrambe le palle hanno componente v<sub>x</sub> in avanti &rarr; qdm = m &times; v<sub>x</sub> + m &times; v<sub>x</sub> = 2m &times; v<sub>x</sub><br><br>' +
+                'La qdm si conserva &rarr; <b>m &times; v<sub>0</sub> = 2m &times; v<sub>x</sub></b>. Le masse si semplificano: <b>v<sub>0</sub> = 2 v<sub>x</sub></b>.',
             formula: 'v_0 = 2 v_x = 2 \\times 0{,}354 \\approx \\boxed{0{,}707 \\text{ m/s}}',
             draw(ctx, w, h, p) {
                 const g = geo(w, h), s = g.s;
@@ -436,13 +463,13 @@ const Problema3 = (() => {
         },
         {
             title: 'Troviamo la massa!',
-            text: 'Ultimo pezzo! L\'<span class="term" data-term="impulso">impulso</span> della stecca ha dato alla palla bianca <span class="term" data-term="velocita">velocità</span> v<sub>0</sub>:<br><br><b>I = m &middot; v<sub>0</sub></b> &rarr; <b>m = I / v<sub>0</sub></b><br><br>' +
-                'm = 0,6375 / 0,707 &asymp; <span class="highlight">0,90 kg</span>.<br><br>' +
+            text: 'Ultimo pezzo! Ricordi l\'<span class="term" data-term="impulso">impulso</span> che abbiamo calcolato prima? La stecca ha trasferito alla palla bianca una qdm pari a I, facendola partire da ferma con velocità v<sub>0</sub>:<br><br>' +
+                '<b>I = m &times; v<sub>0</sub></b> &rarr; <b>m = I / v<sub>0</sub></b> = 0,6375 / 0,707 &asymp; <span class="highlight">0,90 kg</span><br><br>' +
                 '<b>Cosa abbiamo imparato:</b><br>' +
-                '1. Impulso = F &times; &Delta;t = variazione di <span class="term" data-term="quantita-di-moto">quantità di moto</span><br>' +
-                '2. La quantità di moto <span class="term" data-term="conservazione-qdm">si conserva</span> (in ogni direzione!)<br>' +
+                '1. Impulso = F &times; &Delta;t = <span class="term" data-term="quantita-di-moto">qdm</span> trasferita a un oggetto<br>' +
+                '2. La qdm <span class="term" data-term="conservazione-qdm">si conserva</span> in ogni direzione, anche negli <span class="term" data-term="urto">urti</span><br>' +
                 '3. Scomporre in <span class="term" data-term="componente">componenti</span> x e y semplifica tutto<br>' +
-                '4. La simmetria delle velocità era un\'ipotesi del problema, non una legge generale',
+                '4. La simmetria (45° + 45°) vale perché le masse sono uguali &mdash; non è una legge generale',
             formula: 'm = \\frac{I}{v_0} = \\frac{0{,}6375}{0{,}707} = \\boxed{0{,}90 \\text{ kg}}',
             cleanDraw: true,
             draw(ctx, w, h, p) {
@@ -504,5 +531,5 @@ const Problema3 = (() => {
         }
     ];
 
-    return { steps, statement };
+    return { steps, statement, concept };
 })();

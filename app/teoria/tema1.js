@@ -572,5 +572,6 @@ const Tema1 = (() => {
         }
     ];
 
-    return { steps };
+    return { id: 'forze-equilibrio', title: 'Le forze e l\'equilibrio', icon: '\u{1F4AA}', category: 'Meccanica', order: 4, steps };
 })();
+if (typeof TopicRegistry !== 'undefined') TopicRegistry.register(Tema1);

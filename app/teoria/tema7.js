@@ -5,9 +5,9 @@ const Tema7 = (() => {
         // ---- Step 1: A che serve il DCL? ----
         {
             title: 'A che serve il DCL?',
-            text: 'Il <span class="term" data-term="diagramma-corpo-libero">diagramma di corpo libero</span> (DCL) e lo strumento piu importante della meccanica. Prendi una scena complicata e la semplifichi: disegni <b>un solo oggetto</b> con delle frecce che rappresentano <b>tutte le forze</b> che agiscono su di esso.<br><br>' +
-                'Senza DCL, e facilissimo dimenticare una <span class="term" data-term="forza">forza</span> o inventarne una che non esiste. Il DCL e il tuo <span class="highlight">"foglietto magico"</span> per risolvere qualsiasi problema di <span class="term" data-term="equilibrio">equilibrio</span>.<br><br>' +
-                'La trasformazione e spettacolare: da una scena confusa a uno schema <b>chiaro e pulito</b>.',
+            text: 'Il <span class="term" data-term="diagramma-corpo-libero">diagramma di corpo libero</span> (DCL) è lo strumento più importante della meccanica. Prendi una scena complicata e la semplifichi: disegni <b>un solo oggetto</b> con delle frecce che rappresentano <b>tutte le forze</b> che agiscono su di esso.<br><br>' +
+                'Senza DCL, è facilissimo dimenticare una <span class="term" data-term="forza">forza</span> o inventarne una che non esiste. Il DCL è il tuo <span class="highlight">"foglietto magico"</span> per risolvere qualsiasi problema di <span class="term" data-term="equilibrio">equilibrio</span>.<br><br>' +
+                'La trasformazione è spettacolare: da una scena confusa a uno schema <b>chiaro e pulito</b>.',
             formula: null,
             cleanDraw: true,
             duration: 1400,
@@ -160,7 +160,7 @@ const Tema7 = (() => {
         {
             title: "Passo 1: Scegli l'oggetto",
             text: 'Primo passo: decidi <b>quale oggetto</b> stai analizzando. Nei nostri problemi: l\'auto sul piano inclinato, la scala appoggiata al muro, oppure una delle palle da biliardo.<br><br>' +
-                'Disegnalo <b>da solo</b>, senza nient\'altro intorno. Basta una forma semplice: un rettangolo, un cerchio, una linea. Questo e il tuo "protagonista".<br><br>' +
+                'Disegnalo <b>da solo</b>, senza nient\'altro intorno. Basta una forma semplice: un rettangolo, un cerchio, una linea. Questo è il tuo "protagonista".<br><br>' +
                 'Tutto il resto (il piano, il muro, la fune...) sparisce: ne tieni conto solo attraverso le <span class="term" data-term="forza">forze</span> che esercitano sull\'oggetto.',
             formula: null,
             cleanDraw: true,
@@ -426,8 +426,8 @@ const Tema7 = (() => {
         // ---- Step 4: Passo 3 – Scegli gli assi ----
         {
             title: 'Passo 3: Scegli gli assi',
-            text: 'La scelta degli assi rende i calcoli <b>molto piu facili</b>. Sul piano inclinato: metti un asse <span class="highlight">LUNGO il piano</span> e uno <span class="highlight">PERPENDICOLARE</span> ad esso.<br><br>' +
-                'Cosi la <span class="term" data-term="reazione-normale">reazione normale</span> ha una sola componente, e devi scomporre solo il <span class="term" data-term="peso">peso</span>. Se usi gli assi "sbagliati" (orizzontale/verticale), devi scomporre <b>tutte</b> le forze: un disastro!<br><br>' +
+            text: 'La scelta degli assi rende i calcoli <b>molto più facili</b>. Sul piano inclinato: metti un asse <span class="highlight">LUNGO il piano</span> e uno <span class="highlight">PERPENDICOLARE</span> ad esso.<br><br>' +
+                'Così la <span class="term" data-term="reazione-normale">reazione normale</span> ha una sola componente, e devi scomporre solo il <span class="term" data-term="peso">peso</span>. Se usi gli assi "sbagliati" (orizzontale/verticale), devi scomporre <b>tutte</b> le forze: un disastro!<br><br>' +
                 'Per problemi orizzontali/verticali (come la scala): usa i classici assi x e y.',
             formula: null,
             cleanDraw: true,
@@ -591,7 +591,7 @@ const Tema7 = (() => {
             title: 'Errori da evitare',
             text: 'Errori classici da non fare:<br><br>' +
                 '1) <b>Dimenticare una forza</b> (soprattutto la <span class="term" data-term="reazione-normale">reazione normale</span>).<br>' +
-                '2) Aggiungere "la forza del moto": se l\'oggetto e in <span class="term" data-term="equilibrio">equilibrio</span>, la forza totale e <b>ZERO</b>, non c\'e una forza che lo spinge!<br>' +
+                '2) Aggiungere "la forza del moto": se l\'oggetto è in <span class="term" data-term="equilibrio">equilibrio</span>, la forza totale è <b>ZERO</b>, non c\'è una forza che lo spinge!<br>' +
                 '3) Disegnare forze sull\'oggetto <b>sbagliato</b> (confusione azione-reazione).<br>' +
                 '4) Mettere il <span class="term" data-term="peso">peso</span> lungo il piano inclinato invece che <b>verticale verso il basso</b>.',
             formula: null,
@@ -752,11 +752,17 @@ const Tema7 = (() => {
                     ctx.lineWidth = 1 * s;
                     ctx.strokeRect(rightX - 15 * s, y2 - 12 * s, 30 * s, 24 * s);
 
-                    // Only P down and N up (balanced)
-                    Draw.animatedArrow(ctx, rightX, y2 + 14 * s, rightX, y2 + 42 * s, '#5a9a6a', fp, 2 * s, 8 * s);
+                    // P down (weight)
+                    const pStartY = y2 + 14 * s;
+                    const pEndY = y2 + 42 * s;
+                    Draw.animatedArrow(ctx, rightX, pStartY, rightX, pEndY, '#5a9a6a', fp, 2 * s, 8 * s);
                     if (fp > 0.4) Draw.label(ctx, 'P', rightX + 12 * s, y2 + 34 * s, '#5a9a6a', 10 * s);
 
-                    Draw.animatedArrow(ctx, rightX, y2 - 12 * s, rightX, y2 - 42 * s, '#5a8fa8', fp, 2 * s, 8 * s);
+
+                    // N up (normal reaction)
+                    const nTopStart = y2 - 12 * s;
+                    const nTopEnd = y2 - 42 * s;
+                    Draw.animatedArrow(ctx, rightX, nTopStart, rightX, nTopEnd, '#5a8fa8', fp, 2 * s, 8 * s);
                     if (fp > 0.4) Draw.label(ctx, 'N', rightX + 12 * s, y2 - 34 * s, '#5a8fa8', 10 * s);
 
                     // Green checkmark
@@ -788,5 +794,6 @@ const Tema7 = (() => {
         }
     ];
 
-    return { steps };
+    return { id: 'dcl', title: 'Il diagramma di corpo libero', icon: '\u{1F4CB}', category: 'Strumenti', order: 5, steps };
 })();
+if (typeof TopicRegistry !== 'undefined') TopicRegistry.register(Tema7);

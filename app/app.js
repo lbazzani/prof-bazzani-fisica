@@ -5,18 +5,28 @@ const App = (() => {
     let currentStep = 0;
     let problems = [];
     let canvas, ctx;
+    let conceptCanvas, conceptCtx;
     let animationId = null;
+    let conceptAnimId = null;
     let animStartTime = 0;
+    let controlValues = {};
     const ANIM_DURATION = 800;
 
     const $ = (sel) => document.querySelector(sel);
     const $$ = (sel) => document.querySelectorAll(sel);
     const isMobile = () => window.innerWidth <= 600;
+    const track = (event, params) => { if (typeof gtag === 'function') gtag('event', event, params); };
 
     function init() {
         canvas = $('#animation-canvas');
         ctx = canvas.getContext('2d');
+        conceptCanvas = $('#concept-canvas');
+        conceptCtx = conceptCanvas ? conceptCanvas.getContext('2d') : null;
         problems = [Problema1, Problema2, Problema3];
+
+        // Concept overlay skip button
+        const skipBtn = $('#concept-skip');
+        if (skipBtn) skipBtn.addEventListener('click', hideConcept);
 
         // Tab click
         $$('.tab').forEach(tab => {
@@ -71,11 +81,11 @@ const App = (() => {
 
     function handleResize() {
         const container = $('.canvas-container');
-        const pad = isMobile() ? 12 : 24;
-        const w = container.clientWidth - pad;
-        const ratio = isMobile() ? 0.72 : 0.65;
-        const maxH = isMobile() ? 280 : 380;
-        const h = Math.min(maxH, w * ratio);
+        const pad = isMobile() ? 4 : 24;
+        const w = Math.max(1, container.clientWidth - pad);
+        const ratio = isMobile() ? 0.78 : 0.65;
+        const maxH = isMobile() ? 300 : 380;
+        const h = Math.max(1, Math.min(maxH, w * ratio));
         const dpr = window.devicePixelRatio || 1;
         canvas.width = w * dpr;
         canvas.height = h * dpr;
@@ -88,17 +98,20 @@ const App = (() => {
     function switchProblem(idx) {
         currentProblem = idx;
         currentStep = 0;
+        const names = ['Carro attrezzi', 'Scala a pioli', 'Biliardo'];
+        track('select_content', { content_type: 'esercizio', item_id: `problema_${idx + 1}`, content_id: names[idx] || `Problema ${idx + 1}` });
 
         $$('.tab').forEach((tab, i) => tab.classList.toggle('active', i === idx));
         const sel = $('#tab-select');
         if (sel) sel.value = idx;
 
-        // Enunciato
         const problem = problems[idx];
-        $('#statement-text').innerHTML = problem.statement || '';
 
-        // Enunciato: aperto al primo step, chiuso negli altri
-        // (gestito in goStep)
+        // Mostra concept overlay se presente
+        showConcept(problem);
+
+        // Enunciato
+        $('#statement-text').innerHTML = problem.statement || '';
 
         // Dots
         const dotsContainer = $('#step-dots');
@@ -116,11 +129,84 @@ const App = (() => {
         goStep(0);
     }
 
+    function setupInteractiveControls(step) {
+        const container = $('#interactive-controls');
+        if (!container) return;
+
+        // Clear previous controls
+        container.innerHTML = '';
+        container.classList.remove('active');
+        controlValues = {};
+
+        if (!step || !step.interactive) return;
+
+        const interactive = step.interactive;
+
+        // Build sliders
+        if (interactive.sliders && interactive.sliders.length) {
+            interactive.sliders.forEach(slider => {
+                controlValues[slider.id] = slider.default !== undefined ? slider.default : slider.min;
+
+                const wrapper = document.createElement('div');
+                wrapper.className = 'interactive-slider';
+
+                const label = document.createElement('label');
+                const valueSpan = document.createElement('span');
+                valueSpan.className = 'slider-value';
+                valueSpan.textContent = controlValues[slider.id] + (slider.unit || '');
+                label.textContent = slider.label + ': ';
+                label.appendChild(valueSpan);
+
+                const input = document.createElement('input');
+                input.type = 'range';
+                input.min = slider.min;
+                input.max = slider.max;
+                input.step = slider.step || 1;
+                input.value = controlValues[slider.id];
+
+                input.addEventListener('input', () => {
+                    const val = parseFloat(input.value);
+                    controlValues[slider.id] = val;
+                    valueSpan.textContent = val + (slider.unit || '');
+                    // Re-render canvas with current animation progress (fully drawn)
+                    renderCurrentStep(1);
+                });
+
+                wrapper.appendChild(label);
+                wrapper.appendChild(input);
+                container.appendChild(wrapper);
+            });
+
+            container.classList.add('active');
+        }
+    }
+
+    function teardownInteractiveControls() {
+        const container = $('#interactive-controls');
+        if (!container) return;
+        container.innerHTML = '';
+        container.classList.remove('active');
+        controlValues = {};
+    }
+
     function goStep(idx) {
         const problem = problems[currentProblem];
         if (idx < 0 || idx >= problem.steps.length) return;
         currentStep = idx;
         const step = problem.steps[idx];
+
+        // Track progress
+        if (typeof Progress !== 'undefined') {
+            Progress.markExerciseStep(currentProblem, idx, problem.steps.length);
+        }
+        // GA event
+        track('tutorial_step', { step: idx + 1, total_steps: problem.steps.length, exercise: currentProblem + 1 });
+        if (idx === problem.steps.length - 1) {
+            track('tutorial_complete', { exercise: currentProblem + 1 });
+        }
+
+        // Setup or teardown interactive controls
+        setupInteractiveControls(step);
 
         // Chiudi callout glossario se aperto
         if (typeof Glossario !== 'undefined') Glossario.closeCallout();
@@ -224,26 +310,123 @@ const App = (() => {
         ctx.clearRect(0, 0, w, h);
         ctx.save();
 
-        // Se lo step corrente ha cleanDraw, non disegnare i precedenti
+        // Trova da quale step partire: se lo step corrente ha cleanDraw,
+        // disegna solo quello. Altrimenti, risali fino all'ultimo cleanDraw
+        // e disegna da lì in poi (così gli step cleanDraw non "sporcano" i successivi).
         const currentStepObj = problem.steps[currentStep];
         const clean = currentStepObj && currentStepObj.cleanDraw;
 
+        let startFrom = 0;
+        if (!clean) {
+            // Trova l'ultimo step con cleanDraw prima di questo
+            for (let i = currentStep - 1; i >= 0; i--) {
+                if (problem.steps[i].cleanDraw) {
+                    startFrom = i + 1; // parti dallo step DOPO l'ultimo cleanDraw
+                    break;
+                }
+            }
+        }
+
         // Passaggi precedenti (opacità piena) — solo se non cleanDraw
-        for (let i = 0; i < currentStep; i++) {
+        for (let i = startFrom; i < currentStep; i++) {
             if (clean) break;
             if (problem.steps[i].draw) {
                 ctx.globalAlpha = 1;
-                problem.steps[i].draw(ctx, w, h, 1);
+                problem.steps[i].draw(ctx, w, h, 1, controlValues);
             }
         }
 
         // Passaggio corrente (animato)
         if (problem.steps[currentStep] && problem.steps[currentStep].draw) {
             ctx.globalAlpha = progress;
-            problem.steps[currentStep].draw(ctx, w, h, progress);
+            problem.steps[currentStep].draw(ctx, w, h, progress, controlValues);
         }
 
         ctx.restore();
+    }
+
+    // ===== Concept overlay =====
+    function showConcept(problem) {
+        const concept = problem.concept;
+        if (!concept) return false;
+
+        const overlay = $('#concept-overlay');
+        if (!overlay) return false;
+
+        // Popola titolo
+        $('#concept-title').textContent = concept.title || '';
+
+        // Popola testo — items come card separate
+        const textEl = $('#concept-text');
+        if (concept.items && concept.items.length) {
+            textEl.innerHTML = concept.items.map(item =>
+                `<div class="concept-item"><b>${item.name}</b><p>${item.desc}</p></div>`
+            ).join('');
+        } else {
+            textEl.innerHTML = concept.text || '';
+        }
+
+        // Attiva click handler sui termini del glossario nel concept
+        textEl.querySelectorAll('.term').forEach(el => {
+            el.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (typeof Glossario !== 'undefined') Glossario.showCallout(el.dataset.term);
+            });
+        });
+
+        // Formula
+        const formulaEl = $('#concept-formula');
+        if (concept.formula && typeof katex !== 'undefined') {
+            formulaEl.style.display = 'block';
+            formulaEl.innerHTML = '';
+            try { katex.render(concept.formula, formulaEl, { displayMode: true, throwOnError: false }); }
+            catch (e) { formulaEl.textContent = concept.formula; }
+        } else {
+            formulaEl.style.display = 'none';
+        }
+
+        // Show overlay BEFORE measuring canvas width (otherwise clientWidth is 0)
+        overlay.classList.add('active');
+
+        // Canvas concept — setup e animazione
+        if (concept.draw && conceptCanvas && conceptCtx) {
+            const wrap = conceptCanvas.parentElement;
+            const w = Math.max(1, wrap.clientWidth);
+            const h = Math.max(1, Math.min(220, w * 0.55));
+            const dpr = window.devicePixelRatio || 1;
+            conceptCanvas.width = w * dpr;
+            conceptCanvas.height = h * dpr;
+            conceptCanvas.style.width = w + 'px';
+            conceptCanvas.style.height = h + 'px';
+            conceptCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            conceptCanvas.style.display = 'block';
+
+            // Anima
+            if (conceptAnimId) cancelAnimationFrame(conceptAnimId);
+            const startT = performance.now();
+            const dur = concept.duration || 1200;
+            function animConcept() {
+                const elapsed = performance.now() - startT;
+                const raw = Math.min(1, elapsed / dur);
+                const eased = 1 - Math.pow(1 - raw, 3);
+                conceptCtx.clearRect(0, 0, w, h);
+                conceptCtx.save();
+                concept.draw(conceptCtx, w, h, eased);
+                conceptCtx.restore();
+                if (raw < 1) conceptAnimId = requestAnimationFrame(animConcept);
+                else conceptAnimId = null;
+            }
+            animConcept();
+        } else if (conceptCanvas) {
+            conceptCanvas.style.display = 'none';
+        }
+        return true;
+    }
+
+    function hideConcept() {
+        const overlay = $('#concept-overlay');
+        if (overlay) overlay.classList.remove('active');
+        if (conceptAnimId) { cancelAnimationFrame(conceptAnimId); conceptAnimId = null; }
     }
 
     // Draw utilities caricate da draw.js (window.Draw)

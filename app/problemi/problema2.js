@@ -83,6 +83,33 @@ const Problema2 = (() => {
     // ===================================================================
     // STEP
     // ===================================================================
+    const concept = {
+        title: 'Equilibrio delle forze e momenti',
+        items: [
+            { name: 'Equilibrio delle forze',
+              desc: 'La scala è ferma → la somma delle <span class="term" data-term="forza">forze</span> verticali è zero e quella delle forze orizzontali è zero. Questo ci dà due equazioni.' },
+            { name: 'Momento di una forza',
+              desc: '<span class="term" data-term="momento">Momento</span> = Forza × <span class="term" data-term="braccio">braccio</span>. Quando le equazioni delle forze non bastano, il bilancio dei momenti ci dà un\'equazione in più.' },
+            { name: 'Il trucco del perno',
+              desc: 'Scegli il <span class="term" data-term="perno">perno</span> dove agiscono le forze sconosciute: il loro braccio diventa zero e spariscono dal calcolo!' }
+        ],
+        formula: 'M = F \\times b \\qquad \\text{se } b = 0 \\Rightarrow M = 0',
+        draw(ctx, w, h, p) {
+            const s = Draw.S(w, h);
+            ctx.fillStyle = '#faf8f5'; ctx.fillRect(0, 0, w, h);
+            const pivX = w*0.5, barY = h*0.45, barL = w*0.35;
+            ctx.globalAlpha = Math.min(1, p*3);
+            ctx.strokeStyle = '#8b6e4e'; ctx.lineWidth = 5*s; ctx.lineCap = 'round';
+            ctx.beginPath(); ctx.moveTo(pivX-barL, barY); ctx.lineTo(pivX+barL, barY); ctx.stroke();
+            ctx.fillStyle = '#d4956a';
+            ctx.beginPath(); ctx.moveTo(pivX, barY+4*s); ctx.lineTo(pivX-10*s, barY+22*s); ctx.lineTo(pivX+10*s, barY+22*s); ctx.closePath(); ctx.fill();
+            Draw.label(ctx, 'perno', pivX, barY+36*s, '#d4956a', 10*s);
+            if (p > 0.2) { const fp=Math.min(1,(p-0.2)/0.25); ctx.globalAlpha=fp; const fx=pivX-barL*0.35; Draw.animatedArrow(ctx,fx,barY-4*s,fx,barY-50*s,'#c46b60',fp,3*s,10*s); Draw.label(ctx,'F\u2081',fx+14*s,barY-35*s,'#c46b60',11*s); Draw.dashedLine(ctx,pivX,barY+45*s,fx,barY+45*s,'#c46b60',1.5*s); if(fp>0.5) Draw.label(ctx,'b\u2081',(pivX+fx)/2,barY+58*s,'#c46b60',9*s); }
+            if (p > 0.45) { const fp=Math.min(1,(p-0.45)/0.25); ctx.globalAlpha=fp; const fx=pivX+barL*0.85; Draw.animatedArrow(ctx,fx,barY-4*s,fx,barY-30*s,'#5a8fa8',fp,3*s,10*s); Draw.label(ctx,'F\u2082',fx+14*s,barY-22*s,'#5a8fa8',11*s); Draw.dashedLine(ctx,pivX,barY+45*s,fx,barY+45*s,'#5a8fa8',1.5*s); if(fp>0.5) Draw.label(ctx,'b\u2082',(pivX+fx)/2,barY+58*s,'#5a8fa8',9*s); }
+            if (p > 0.7) { ctx.globalAlpha=(p-0.7)/0.3; const cx=w*0.5,cy=h*0.88; Draw.roundRect(ctx,cx-100*s,cy-14*s,200*s,28*s,6*s,'#e4f2e7'); ctx.strokeStyle='#81c784'; ctx.lineWidth=1.2*s; ctx.strokeRect(cx-100*s,cy-14*s,200*s,28*s); Draw.label(ctx,'F\u2081 \u00d7 b\u2081 = F\u2082 \u00d7 b\u2082',cx,cy+1*s,'#3d8b44',12*s); }
+        }
+    };
+
     const steps = [
 
         // ---- STEP 0: Introduzione ----
@@ -133,11 +160,11 @@ const Problema2 = (() => {
         // ---- STEP 2: Le 4 forze ----
         {
             title: 'Quali forze agiscono?',
-            text: 'Disegniamo tutte le <span class="term" data-term="forza">forze</span> sulla scala:<br><br>' +
-                '&bull; <b style="color:#c46b60">F<sub>P</sub></b> &mdash; il <span class="term" data-term="peso">peso</span>, applicato al centro (il <span class="term" data-term="baricentro">baricentro</span>)<br>' +
-                '&bull; <b style="color:#5a8fa8">N<sub>1</sub></b> &mdash; la <span class="term" data-term="reazione-normale">reazione del muro</span>, orizzontale (muro liscio!)<br>' +
-                '&bull; <b style="color:#5a9a6a">N<sub>2</sub></b> &mdash; la reazione del pavimento, verticale<br>' +
-                '&bull; <b style="color:#d4956a">F<sub>a</sub></b> &mdash; l\'<span class="term" data-term="attrito">attrito</span> del pavimento, orizzontale verso il muro',
+            text: 'Disegniamo tutte le <span class="term" data-term="forza">forze</span> sulla scala. Conta non solo la direzione, ma anche <b>dove</b> è applicata ciascuna:<br><br>' +
+                '&bull; <b style="color:#c46b60">F<sub>P</sub></b> &mdash; il <span class="term" data-term="peso">peso</span>, punta in basso. Applicato al <span class="term" data-term="baricentro">centro</span> della scala<br>' +
+                '&bull; <b style="color:#5a8fa8">N<sub>1</sub></b> &mdash; la <span class="term" data-term="reazione-normale">reazione del muro</span>, orizzontale verso destra. Applicata <b>in cima</b>, dove la scala tocca il muro (liscio &rarr; niente <span class="term" data-term="attrito">attrito</span>!)<br>' +
+                '&bull; <b style="color:#5a9a6a">N<sub>2</sub></b> &mdash; la reazione del pavimento, verticale verso l\'alto. Applicata <b>in basso</b>, dove la scala tocca terra<br>' +
+                '&bull; <b style="color:#d4956a">F<sub>a</sub></b> &mdash; l\'<span class="term" data-term="attrito">attrito</span> del pavimento, orizzontale verso il muro. Stesso punto di N<sub>2</sub>, <b>in basso</b>',
             formula: null,
             draw(ctx, w, h, p) {
                 const ge = geo(w, h), s = ge.s;
@@ -159,11 +186,11 @@ const Problema2 = (() => {
         // ---- STEP 3: Equilibrio verticale ----
         {
             title: 'Forze verticali: N\u2082 = peso',
-            text: 'Partiamo dal caso più semplice. La scala è ferma, quindi in <span class="term" data-term="equilibrio">equilibrio</span>.<br><br>' +
-                'Guardiamo solo le forze <b>verticali</b>:<br>' +
-                '&bull; In basso: il peso F<sub>P</sub> tira giù<br>' +
-                '&bull; In alto: N<sub>2</sub> spinge su<br><br>' +
-                'Si bilanciano &rarr; <b>N<sub>2</sub> = F<sub>P</sub></b>. Facile!',
+            text: 'La scala è ferma &rarr; <span class="term" data-term="equilibrio">equilibrio</span> &rarr; la somma delle forze è zero.<br><br>' +
+                'Separiamo le forze per direzione. Quelle <b>verticali</b> (su/giù):<br>' +
+                '&bull; <b style="color:#c46b60">F<sub>P</sub></b> punta verso il <b>basso</b> (il peso tira giù)<br>' +
+                '&bull; <b style="color:#5a9a6a">N<sub>2</sub></b> punta verso l\'<b>alto</b> (il pavimento regge la scala)<br><br>' +
+                'Le altre due (N<sub>1</sub> e F<sub>a</sub>) sono orizzontali, quindi qui non contano.<br>Risultato: <b>N<sub>2</sub> = F<sub>P</sub></b>. Facile!',
             formula: 'N_2 = F_P = m \\cdot g = 16{,}25 \\times 9{,}8 = \\boxed{159{,}25 \\text{ N}}',
             draw(ctx, w, h, p) {
                 const ge = geo(w, h), s = ge.s;
@@ -188,10 +215,11 @@ const Problema2 = (() => {
         // ---- STEP 4: Equilibrio orizzontale — il problema ----
         {
             title: 'Forze orizzontali: serve aiuto!',
-            text: 'Guardiamo le forze <b>orizzontali</b>:<br>' +
-                '&bull; N<sub>1</sub> spinge verso destra<br>' +
-                '&bull; F<sub>a</sub> spinge verso sinistra<br><br>' +
-                'Sappiamo che <b>N<sub>1</sub> = F<sub>a</sub></b>, ma quanto valgono? Le forze da sole non bastano per scoprirlo. Ci serve un nuovo strumento: il <span class="term" data-term="momento">momento di una forza</span>.',
+            text: 'Ora le forze <b>orizzontali</b>:<br>' +
+                '&bull; <b style="color:#5a8fa8">N<sub>1</sub></b> spinge verso destra (il muro respinge la scala)<br>' +
+                '&bull; <b style="color:#d4956a">F<sub>a</sub></b> spinge verso sinistra (l\'attrito trattiene la scala)<br><br>' +
+                'Per l\'equilibrio <b>N<sub>1</sub> = F<sub>a</sub></b>, ma quanto valgono? Abbiamo <b>un\'equazione con due incognite</b>: le forze da sole non bastano!<br><br>' +
+                'Ci serve un nuovo strumento: il <span class="term" data-term="momento">momento di una forza</span> (la capacità di far ruotare un oggetto).',
             formula: 'N_1 = F_a \\quad \\text{ma quanto vale?}',
             draw(ctx, w, h, p) {
                 const ge = geo(w, h), s = ge.s;
@@ -273,12 +301,11 @@ const Problema2 = (() => {
         // ---- STEP 6: Applichiamo alla scala ----
         {
             title: 'Applichiamo alla scala',
-            text: 'Scegliamo il <span class="term" data-term="perno">perno</span> nel <span class="highlight">piede della scala</span> (dove tocca il pavimento). Ora guardiamo ogni forza:<br><br>' +
-                '&bull; <b style="color:#5a9a6a">N<sub>2</sub></b> parte dal piede &rarr; passa per il perno &rarr; <span class="highlight">braccio = 0</span><br>' +
-                '&bull; <b style="color:#d4956a">F<sub>a</sub></b> parte dal piede &rarr; passa per il perno &rarr; <span class="highlight">braccio = 0</span><br>' +
-                '&bull; <b style="color:#c46b60">F<sub>P</sub></b> è al centro &rarr; <b>lontana dal perno</b> &rarr; braccio = b/2<br>' +
-                '&bull; <b style="color:#5a8fa8">N<sub>1</sub></b> è in cima &rarr; <b>lontana dal perno</b> &rarr; braccio = h<br><br>' +
-                'Due forze spariscono dal bilancio. Ne restano due: possiamo risolvere!',
+            text: 'Scegliamo il <span class="term" data-term="perno">perno</span> nel <span class="highlight">piede della scala</span> (dove tocca il pavimento). Perché proprio lì? Perché N<sub>2</sub> e F<sub>a</sub> sono applicate <b>esattamente su quel punto</b>: braccio = 0, momento = 0, e spariscono dal calcolo!<br><br>' +
+                'Restano solo due forze con <span class="term" data-term="braccio">braccio</span> &ne; 0:<br>' +
+                '&bull; <b style="color:#c46b60">F<sub>P</sub></b> è verticale &rarr; il suo braccio è la distanza <b>orizzontale</b> dal perno al punto dove agisce &rarr; <b>b/2</b> (metà della base)<br>' +
+                '&bull; <b style="color:#5a8fa8">N<sub>1</sub></b> è orizzontale &rarr; il suo braccio è la distanza <b>verticale</b> dal perno al punto dove agisce &rarr; <b>h</b><br><br>' +
+                '<i>Regola pratica: forza verticale &rarr; braccio orizzontale. Forza orizzontale &rarr; braccio verticale.</i>',
             formula: 'M_{N_2} = 0 \\quad M_{F_a} = 0 \\quad \\text{(passano per il perno!)}',
             cleanDraw: true,
             duration: 2000,
@@ -349,9 +376,10 @@ const Problema2 = (() => {
         // ---- STEP 7: Calcolo ----
         {
             title: 'I momenti si bilanciano',
-            text: 'F<sub>P</sub> farebbe ruotare la scala in senso <b>orario</b> (cade verso destra). N<sub>1</sub> la farebbe ruotare in senso <b>antiorario</b> (la spinge verso sinistra).<br><br>' +
-                'In equilibrio i due momenti sono uguali:<br><br>' +
-                '<b>F<sub>P</sub> &times; b/2 = N<sub>1</sub> &times; h</b><br><br>' +
+            text: '<b style="color:#c46b60">F<sub>P</sub></b> farebbe cadere la scala verso destra &rarr; rotazione <b>oraria</b> &#8635;<br>' +
+                '<b style="color:#5a8fa8">N<sub>1</sub></b> spinge la cima verso il muro &rarr; rotazione <b>antioraria</b> &#8634;<br><br>' +
+                'In <span class="term" data-term="equilibrio">equilibrio</span> i due <span class="term" data-term="momento">momenti</span> sono uguali e opposti:<br>' +
+                '<b>F<sub>P</sub> &times; (b/2) = N<sub>1</sub> &times; h</b><br><br>' +
                 'Risolviamo per N<sub>1</sub>:',
             formula: 'N_1 = \\frac{F_P \\cdot b}{2h} = \\frac{159{,}25 \\times 4{,}47}{2 \\times 4} = \\frac{711{,}8}{8} \\approx \\boxed{89{,}0 \\text{ N}}',
             cleanDraw: true,
@@ -412,7 +440,8 @@ const Problema2 = (() => {
                 '<b>Cosa abbiamo imparato:</b><br>' +
                 '1. Momento = forza &times; braccio<br>' +
                 '2. Se il braccio è zero, il momento è zero<br>' +
-                '3. Scegliere il perno giusto semplifica i calcoli',
+                '3. Forza verticale &rarr; braccio orizzontale; forza orizzontale &rarr; braccio verticale<br>' +
+                '4. Scegliere il perno giusto semplifica i calcoli',
             formula: 'N_2 = 159{,}25 \\text{ N} \\quad N_1 = F_a \\approx 89{,}0 \\text{ N}',
             cleanDraw: true,
             draw(ctx, w, h, p) {
@@ -432,5 +461,5 @@ const Problema2 = (() => {
         }
     ];
 
-    return { steps, statement };
+    return { steps, statement, concept };
 })();
